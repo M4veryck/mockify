@@ -10,26 +10,27 @@ import styles from '../styles/Home.module.scss'
 import { useEffect } from 'react'
 
 export default function Home() {
-    useEffect(() => {
-        const box = document.getElementById('box')
-        const pageContainer = document.getElementById('page--container')
-        box.style.height = `${pageContainer.offsetHeight + 120}px`
-        // console.log(pageContainer.offsetHeight)
+    // useEffect(() => {
+    //     const box = document.getElementById('box')
+    //     const pageContainer = document.getElementById('page--container')
+    //     box.style.height = `${pageContainer.offsetHeight + 120}px`
+    //     // console.log(pageContainer.offsetHeight)
 
-        if (typeof window !== 'undefined') {
-            window.addEventListener('resize', () => {
-                box.style.height = `${pageContainer.offsetHeight + 120}px`
-            })
-        }
+    //     if (typeof window !== 'undefined') {
+    //         window.addEventListener('resize', () => {
+    //             box.style.height = `${pageContainer.offsetHeight + 120}px`
+    //         })
+    //     }
 
-        return () => {
-            if (typeof window !== 'undefined') {
-                window.removeEventListener('resize', () => {
-                    box.style.height = `${pageContainer.offsetHeight + 120}px`
-                })
-            }
-        }
-    }, [])
+    //     return () => {
+    //         if (typeof window !== 'undefined') {
+    //             window.removeEventListener('resize', () => {
+    //                 box.style.height = `${pageContainer.offsetHeight + 120}px`
+    //             })
+    //         }
+    //     }
+    // }, [])
+
     return (
         <>
             <Head>
@@ -41,23 +42,23 @@ export default function Home() {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <Layout>
-                <div className={styles['page--container']} id="page--container">
+            <div className={styles['page--container']} id="page--container">
+                <Layout>
                     <Hero />
-                    <AboutMe />
-                    <Projects />
-                </div>
-                <div className={styles['box']} id="box">
+                    {/* <AboutMe /> */}
+                    {/* <Projects /> */}
+                </Layout>
+            </div>
+            {/* <div className={styles['box']} id="box">
                     <Image
-                        src="/backgrounds/index-background.svg"
+                        src="/backgrounds/main-background.svg"
                         alt="background decoration"
                         layout="fill"
                         objectFit="cover"
                         quality={100}
                         // priority
                     />
-                </div>
-            </Layout>
+                </div> */}
         </>
     )
 }

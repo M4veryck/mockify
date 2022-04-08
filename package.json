@@ -1,10 +1,10 @@
 {
-    "name": "personal-website-jsx",
+    "name": "playlist-frontend",
     "version": "0.1.0",
     "private": true,
     "scripts": {
         "test": "jest",
-        "dev": " next dev -p 8000",
+        "dev": " next dev -p 3000",
         "build": "next build",
         "start": "next start"
     },

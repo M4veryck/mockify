@@ -1,0 +1,141 @@
+@import '../vars.scss';
+
+.login--section {
+    display: grid;
+    height: fit-content;
+
+    @include background-image(
+        $clr-soft-dark,
+        url('/backgrounds/main-background.svg')
+    );
+    color: $clr-soft-light;
+}
+
+.login--container {
+    display: grid;
+    justify-self: center;
+    justify-items: center;
+
+    // background-color: #ff7e4f;
+    // background-color: $clr-soft-dark;
+    background: rgb(17, 16, 22);
+    background: linear-gradient(
+        180deg,
+        rgba(17, 16, 22, 1) 33%,
+        rgba(0, 0, 0, 0.6754901789817489) 99%
+    );
+    // background-color: rgb(32, 32, 32);
+    padding: 3em 2em;
+    border-radius: 5px;
+    margin-block: 3em;
+}
+
+.title {
+    width: fit-content;
+
+    padding-bottom: 0.1em;
+    border-bottom: 2px solid #693be7;
+    margin-top: 0;
+
+    font-size: $fs-h2;
+    text-align: center;
+    color: #693be7;
+    letter-spacing: 1px;
+}
+
+.form {
+    display: grid;
+    * {
+        display: block;
+
+        font-size: $fs-p;
+    }
+
+    label {
+        border: none;
+        margin-bottom: 0.5em;
+
+        font-weight: 600;
+    }
+}
+
+.email,
+.password {
+    @include font-stack($primary-font);
+
+    background-color: rgb(252, 252, 252);
+    padding: 0.25em 0.5em;
+    border: none;
+    border-radius: 5px;
+    outline-color: #693be7;
+    margin-bottom: 2em;
+
+    font-size: $fs-p;
+}
+
+.invalid-email {
+    width: fit-content;
+
+    border-bottom: 1px solid #f02626;
+    margin-top: -1em;
+
+    color: #f02626;
+}
+
+.bad-field {
+    border: 2.5px solid #f02626;
+}
+
+.log-in--btn {
+    @include font-stack($primary-font);
+    width: fit-content;
+    display: block;
+    justify-self: right;
+    cursor: pointer;
+
+    background-color: #693be7;
+    padding: 1em 2em;
+    border: none;
+    border-radius: 3px;
+    margin-block: 1.5em;
+
+    color: $clr-soft-light;
+    // text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+
+    &:hover,
+    &:focus-visible {
+        transform: scale(1.04);
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        transform: none;
+
+        background-color: lightgray;
+
+        color: rgb(80, 80, 80);
+    }
+}
+
+.bad-login {
+    width: 100%;
+
+    padding-block: 1em;
+    background-color: lightgray;
+    border: 2px solid $clr-dark;
+    border-radius: 5px;
+
+    color: #f02626;
+    font-weight: 600;
+    text-align: center;
+}
+
+.register-text {
+    margin-top: 1em;
+
+    a {
+        color: $clr-soft-light;
+    }
+}

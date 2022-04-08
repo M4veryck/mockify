@@ -11,6 +11,7 @@
     transition: transform 250ms cubic-bezier(0.5, 0, 0.5, 1);
 
     background: $clr-dark;
+    // background-color: transparent;
     color: $clr-light;
 }
 
@@ -52,7 +53,8 @@
         transform: none;
         transition: none;
 
-        background-color: $clr-dark;
+        // background-color: $clr-dark;
+        background-color: transparent;
     }
 
     .nav-list {
@@ -76,7 +78,9 @@
 
         &:hover,
         &:focus-visible {
-            border-bottom: 2px solid $clr-accent;
+            // border-bottom: 2px solid $clr-soft-light;
+
+            color: rgb(179, 179, 179);
         }
 
         &:last-of-type {

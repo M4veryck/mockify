@@ -12,7 +12,8 @@
     z-index: 8;
     opacity: 1;
 
-    background-color: $clr-dark;
+    // background-color: $clr-dark;
+    background-color: transparent;
     padding-block: 0.1em;
     padding-inline: 5%;
 }
@@ -57,7 +58,7 @@
     height: 3px;
     transition: transform 250ms ease-in-out;
 
-    background: $clr-accent;
+    background: $clr-soft-light;
     border-radius: 1em;
 }
 

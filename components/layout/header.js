@@ -28,7 +28,7 @@ export default function Header() {
             <Link href="/#main">
                 <a className={styles['logo--link']}>
                     <Image
-                        src="/logos/demo-MMaveryck.svg"
+                        src="/logos/mockify-logo.svg"
                         alt=""
                         width={180}
                         height={50}

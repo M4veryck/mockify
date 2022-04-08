@@ -4,32 +4,28 @@
     display: grid;
     justify-items: center;
     width: 100%;
-    height: 610px;
+    height: 600px;
     position: relative;
     z-index: 1;
 
-    @include background-image(
-        $clr-soft-dark,
-        url('/backgrounds/dark-background.svg')
-    );
+    // @include background-image(
+    //     $clr-soft-dark,
+    //     url('/backgrounds/main-background.svg')
+    // );
+
+    color: $clr-soft-light;
 }
 
 .hero--container {
-    display: grid;
-    align-self: flex-start;
     width: 90%;
-}
+    max-width: 420px;
+    height: fit-content;
+    display: grid;
+    grid-template-rows: repeat(2, auto);
+    gap: 0;
+    align-self: flex-start;
 
-.name-rol--container {
-    width: 100%;
-    position: relative;
-    z-index: 2;
-
-    padding-top: 3em;
-    padding-inline: 1.2em;
-    margin-top: 1em;
-
-    color: $clr-soft-light;
+    margin-top: 5em;
 }
 
 .name {
@@ -38,99 +34,52 @@
 
     margin-block: 0;
 
-    @include font-stack('Montserrat');
+    @include font-stack('Nunito');
 
     font-size: $fs-h1;
-    font-weight: $bold;
+    font-weight: 700;
+    line-height: 1.2;
 }
 
-.first-name,
-.last-name {
-    background: rgb(214, 36, 205);
-    background: linear-gradient(
-        270deg,
-        rgba(214, 36, 205, 0.74831931063441) 0%,
-        rgba(25, 139, 175, 0.8967786943879115) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+.word-new {
+    color: #2fd819;
 }
 
-.rol {
+.caption {
     width: fit-content;
     height: fit-content;
-    position: relative;
 
-    margin: 0.5em 0 3em 0.5em;
+    margin: 1em 0 0;
 
-    font-weight: $bold !important;
-    font-size: $fs-rol;
-
-    &::after {
-        width: 95%;
-        height: 0;
-        content: '';
-        position: absolute;
-        top: 1.1em;
-        left: 0.5em;
-        opacity: 0.75;
-
-        border: 3px solid $clr-accent;
-    }
+    color: #d6d6d6;
+    font-weight: 700;
+    font-size: $fs-caption;
 }
 
-.overlap-div {
-    width: 80%;
-    max-width: 360px;
-    position: relative;
-    top: -25%;
-    right: -2%;
-    z-index: 2;
+.log-in--btn {
+    justify-self: center;
+    cursor: pointer;
+    height: fit-content;
 
-    border-radius: 3px;
-}
+    background-color: $clr-soft-dark;
+    padding: 1em 3em;
+    border: none;
+    border-radius: 50px;
+    margin-top: -3em;
 
-.ads-text--container {
-    position: relative;
-    width: 100%;
+    color: $clr-soft-light;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    letter-spacing: 1px;
+    // text-transform: uppercase;
 
-    @include background-image(
-        $clr-soft-light,
-        url('/backgrounds/demo-hero-background.svg')
-    );
-    padding: 2em 0 2em 1.5em;
-    border-radius: 3px;
-    box-shadow: $box-shadow-strong;
-    margin: 0;
-}
+    &:hover,
+    &:focus-visible {
+        background-color: $clr-soft-light;
 
-.ads-text {
-    width: fit-content;
-    position: relative;
-
-    padding-left: 1em;
-
-    font-size: $fs-p;
-    font-weight: $bold;
-
-    &:first-of-type {
-        margin-top: 0;
-    }
-
-    &:last-of-type {
-        margin-bottom: 0;
-    }
-
-    &::before {
-        height: 0.8em;
-        position: absolute;
-        content: '';
-        top: -0.1em;
-        left: -0.75em;
-
-        border: 3px solid #ff00f2;
-        margin-left: 1em;
+        color: $clr-soft-dark;
     }
 }
 
@@ -139,12 +88,12 @@
         font-size: $fs-h1 + $add + 0.3;
     }
 
-    .rol {
-        font-size: $fs-rol + $add;
+    .caption {
+        font-size: $fs-caption + $add;
     }
 
-    .ads-text {
-        font-size: $fs-p + $add;
+    .log-in--btn {
+        font-size: 1.4rem + $add;
     }
 }
 
@@ -153,45 +102,63 @@
    ==================== */
 
 @media (min-width: 460px) {
-    @include increase-fs-hero(0.1);
-}
-
-@media (min-width: 680px) {
-    @include increase-fs-hero(0.2);
-}
-
-@media (min-width: 800px) {
-    @include increase-fs-hero(0.6);
+    @include increase-fs-hero(0.3);
 
     .hero--section {
         height: 700px;
     }
+}
+
+@media (min-width: 680px) {
+    @include increase-fs-hero(0.5);
+
+    .hero--section {
+        height: 750px;
+    }
+}
+
+@media (min-width: 780px) {
+    .hero--section {
+        justify-items: left;
+    }
 
     .hero--container {
-        padding-left: 10em;
-    }
-
-    .overlap-div {
-        max-width: 460px;
-    }
-
-    .ads-text {
-        font-size: $fs-p + 0.3;
+        margin-left: 20%;
     }
 }
 
-@media (min-width: 940px) {
-    @include increase-fs-hero(0.75);
+// @media (min-width: 800px) {
+//     @include increase-fs-hero(0.6);
 
-    .name-rol--container {
-        max-width: 1100px;
-    }
+//     .hero--section {
+//         height: 700px;
+//     }
 
-    .overlap-div {
-        max-width: 460px;
-    }
+//     .hero--container {
+//         padding-left: 10em;
+//     }
 
-    .ads-text {
-        font-size: $fs-p + 0.4;
-    }
-}
+//     .overlap-div {
+//         max-width: 460px;
+//     }
+
+//     .ads-text {
+//         font-size: $fs-p + 0.3;
+//     }
+// }
+
+// @media (min-width: 940px) {
+//     @include increase-fs-hero(0.75);
+
+//     .name-rol--container {
+//         max-width: 1100px;
+//     }
+
+//     .overlap-div {
+//         max-width: 460px;
+//     }
+
+//     .ads-text {
+//         font-size: $fs-p + 0.4;
+//     }
+// }

@@ -1,6 +1,15 @@
-.box {
-    position: absolute;
-    z-index: 0;
-    top: -60px;
-    width: 100%;
+@import './vars.scss';
+
+// .box {
+//     position: absolute;
+//     z-index: 0;
+//     top: -60px;
+//     width: 100%;
+// }
+
+.page--container {
+    @include background-image(
+        $clr-soft-dark,
+        url('/backgrounds/main-background.svg')
+    );
 }
