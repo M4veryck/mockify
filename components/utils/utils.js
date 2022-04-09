@@ -1,8 +1,7 @@
 export const isValidEmail = email => {
     if (
         email.match(
-            /^((([!#$%&'*+\-/=?^_`{|}~\w])|([!#$%&'*+\-/=?^_`{|}~\w][!#$%&'*+\-/=?^_`{|}~\.\w]{0,}[!#$%&'*+\-/=?^_`{|}~\w]))[@]\w+([-.]\w+)*\.\w+([-.]\w+)*)$/ ||
-                false
+            /^((([!#$%&'*+\-/=?^_`{|}~\w])|([!#$%&'*+\-/=?^_`{|}~\w][!#$%&'*+\-/=?^_`{|}~\.\w]{0,}[!#$%&'*+\-/=?^_`{|}~\w]))[@]\w+([-.]\w+)*\.\w+([-.]\w+)*)$/
         )
     ) {
         return true
@@ -18,4 +17,9 @@ export const filterEmptyFields = newForm => {
         }
     )
     return messyEmptyFields.map(([field, value]) => field)
+}
+
+export const getInputData = e => {
+    const { name, value } = e.target
+    return { name, value }
 }

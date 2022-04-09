@@ -1,0 +1,19 @@
+@use '../Login/Login.module.scss';
+@import '../vars.scss';
+
+.name {
+    @include font-stack($primary-font);
+
+    background-color: rgb(252, 252, 252);
+    padding: 0.25em 0.5em;
+    border: none;
+    border-radius: 5px;
+    outline-color: #693be7;
+    margin-bottom: 2em;
+
+    font-size: $fs-p;
+}
+
+.bad-field {
+    border: 2.5px solid #f02626;
+}
