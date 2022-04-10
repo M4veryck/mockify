@@ -1,29 +1,40 @@
 import dbConnect from '../../../lib/connect'
-import jwt from 'jsonwebtoken'
 import User from '../../../models/User'
-
-const createToken = user =>
-    jwt.sign({ userId: user._id, name: user.name }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRATION,
-    })
+import { createToken } from './login'
 
 export default async function register(req, res) {
-    await dbConnect()
-
-    if (req.method !== 'POST') {
-        return res.status(400).json({
-            error: `${req.method} not allowed. Only POST allowed`,
-        })
-    }
-
     try {
-        const user = await User.create(req.body)
-        const token = createToken(user)
+        await dbConnect()
 
-        return res
-            .status(200)
-            .json({ name: user.name, email: user.email, token })
+        if (req.method !== 'POST') {
+            return res.status(400).json({
+                error: `${req.method} not allowed. Only POST allowed`,
+            })
+        }
+
+        const { email } = req.body
+
+        const user = await User.findOne({ email })
+
+        if (user) {
+            return res.status(400).json({
+                alreadyRegistered: true,
+                error: `User with email ${email} already registered`,
+            })
+        }
+
+        const newUser = await User.create(req.body)
+
+        const token = createToken(newUser)
+
+        return res.status(200).json({
+            name: newUser.name,
+            email: newUser.email,
+            token,
+        })
     } catch (err) {
-        res.status(500).json({ error: err })
+        return res.status(500).json({
+            server_error: err.message,
+        })
     }
 }

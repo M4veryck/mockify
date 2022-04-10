@@ -62,13 +62,13 @@
     height: fit-content;
 
     background-color: $clr-soft-dark;
-    padding: 1em 3em;
+    padding: 1em 2.5em;
     border: none;
     border-radius: 50px;
     margin-top: -3em;
 
     color: $clr-soft-light;
-    font-size: 1.4rem;
+    font-size: 1rem;
     font-weight: 700;
     text-align: center;
     text-decoration: none;
@@ -93,7 +93,7 @@
     }
 
     .log-in--btn {
-        font-size: 1.4rem + $add;
+        font-size: 1rem + $add;
     }
 }
 

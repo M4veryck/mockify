@@ -13,7 +13,7 @@
     opacity: 1;
 
     // background-color: $clr-dark;
-    background-color: transparent;
+    background-color: rgb(32, 32, 32);
     padding-block: 0.1em;
     padding-inline: 5%;
 }
@@ -80,6 +80,8 @@
 
 @media (min-width: 900px) {
     .header {
+        // opacity: 0.9;
+
         box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     }
 

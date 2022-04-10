@@ -1,35 +1,40 @@
-import { useState } from 'react'
+import { useState, useReducer } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-import Layout from '../../components/layout/layout'
 import styles from '../../styles/Register/Register.module.scss'
-import useForm, { ACTIONS } from '../../components/hooks/useForm'
-import { getInputData } from '../../components/utils/utils'
+import { getInputData, isValidEmail } from '../../components/utils/utils'
 
-const initialState = {
+const REG_ACTIONS = {
+    HANDLE_NAME: 'handle-name',
+    HANDLE_EMAIL: 'handle-email',
+    HANDLE_PASSWORD: 'handle-password',
+}
+
+const regInitialState = {
     form: {
         name: '',
         email: '',
         password: '',
     },
-    emailTyped: false,
+    validName: true,
     validEmail: true,
+    validPassword: true,
     badFields: ['name', 'email', 'password'],
-    highlightBadFields: false,
-    badLogin: false,
 }
 
 export default function Register() {
-    const { state, dispatcher } = useForm(initialState)
+    const [regState, regDispatcher] = useReducer(regReducer, regInitialState)
     const [disabledBtn, setDisabledBtn] = useState(false)
+    const [highlightBadFields, setHighlightBadFields] = useState(false)
     const [serverError, setServerError] = useState(false)
+    const [alreadyRegistered, setAlreadyRegistered] = useState(false)
     const router = useRouter()
 
     const isBadFieldClass = id => {
         if (
-            state.highlightBadFields &&
-            state.badFields.some(field => field === id)
+            highlightBadFields &&
+            regState.badFields.some(field => field === id)
         ) {
             return styles['bad-field']
         }
@@ -37,7 +42,52 @@ export default function Register() {
         return ''
     }
 
-    const fetchLoginApi = async state => {
+    function regReducer(regState, action) {
+        const { name, value } = action.payload
+        const newForm = {
+            ...regState.form,
+            [name]: value,
+        }
+
+        const isValidName = newForm.name.length >= 4
+        const isValidPassword = newForm.password.length >= 6
+
+        const badFields = []
+
+        if (!isValidName) badFields.push('name')
+        if (!isValidEmail(newForm.email)) badFields.push('email')
+        if (!isValidPassword) badFields.push('password')
+
+        switch (action.type) {
+            case REG_ACTIONS.HANDLE_NAME:
+                return {
+                    ...regState,
+                    form: newForm,
+                    badFields,
+                    validName: isValidName,
+                }
+
+            case REG_ACTIONS.HANDLE_EMAIL:
+                return {
+                    ...regState,
+                    form: newForm,
+                    badFields,
+                    validEmail: isValidEmail(value),
+                }
+
+            case REG_ACTIONS.HANDLE_PASSWORD:
+                return {
+                    ...regState,
+                    form: newForm,
+                    badFields,
+                    validPassword: isValidPassword,
+                }
+            default:
+                return regState
+        }
+    }
+
+    const fetchRegisterApi = async regState => {
         try {
             const res = await fetch('/api/auth/register', {
                 method: 'POST',
@@ -45,134 +95,158 @@ export default function Register() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(state.form),
+                body: JSON.stringify(regState.form),
             })
 
             const data = await res.json()
 
             if (res.ok) {
                 localStorage.setItem('userToken', data.token)
-                router.push('/')
+                router.push('/playlists')
                 return
             }
 
-            console.log(data)
+            if (data.alreadyRegistered) {
+                setAlreadyRegistered(true)
+                setDisabledBtn(false)
+            }
 
-            setDisabledBtn(false)
-            dispatcher({ type: ACTIONS.HANDLE_BAD_LOGIN })
-            return
+            if (res.status === 500) {
+                setServerError(true)
+                return
+            }
         } catch (err) {
-            console.log(err)
             setServerError(true)
+            return
         }
     }
 
+    console.log(regState)
+
     return (
         <section className={styles['login--section']}>
-            <Layout>
-                <main className={styles['login--container']}>
-                    {serverError ? (
-                        <p className={styles['server-error']}>
-                            Oops! <br />
-                            Error 500: Server Error. <br />
-                            Please refresh and try again.
+            <main className={styles['login--container']}>
+                {serverError ? (
+                    <p className={styles['server-error']}>
+                        Oops! <br />
+                        Error 500: Server Error. <br />
+                        Please refresh and try again.
+                    </p>
+                ) : (
+                    <>
+                        <h2 className={styles['title']}>Register</h2>
+
+                        <form className={styles['form']}>
+                            <label htmlFor="name">Name:</label>
+                            <input
+                                name="name"
+                                id="name"
+                                type="text"
+                                required
+                                value={regState.form.name}
+                                className={`${styles['name']} ${isBadFieldClass(
+                                    'name'
+                                )}`}
+                                onChange={e => {
+                                    setHighlightBadFields(false)
+                                    setAlreadyRegistered(false)
+                                    regDispatcher({
+                                        type: REG_ACTIONS.HANDLE_NAME,
+                                        payload: getInputData(e),
+                                    })
+                                }}
+                            />
+                            {!regState.validName && (
+                                <p className={styles['invalid-field']}>
+                                    Name must be at least 4 characters long
+                                </p>
+                            )}
+
+                            <label htmlFor="email">Email:</label>
+                            <input
+                                name="email"
+                                id="email"
+                                type="email"
+                                required
+                                value={regState.form.email}
+                                className={`${
+                                    styles['email']
+                                } ${isBadFieldClass('email')}`}
+                                onChange={e => {
+                                    setHighlightBadFields(false)
+                                    setAlreadyRegistered(false)
+                                    regDispatcher({
+                                        type: REG_ACTIONS.HANDLE_EMAIL,
+                                        payload: getInputData(e),
+                                    })
+                                }}
+                            />
+                            {!regState.validEmail && (
+                                <p className={styles['invalid-field']}>
+                                    Invalid Email
+                                </p>
+                            )}
+
+                            <label htmlFor="password">Password:</label>
+                            <input
+                                name="password"
+                                id="password"
+                                type="password"
+                                required
+                                value={regState.form.password}
+                                className={`${
+                                    styles['password']
+                                } ${isBadFieldClass('password')}`}
+                                onChange={e => {
+                                    setHighlightBadFields(false)
+                                    setAlreadyRegistered(false)
+                                    regDispatcher({
+                                        type: REG_ACTIONS.HANDLE_PASSWORD,
+                                        payload: getInputData(e),
+                                    })
+                                }}
+                            />
+
+                            {!regState.validPassword && (
+                                <p className={styles['invalid-field']}>
+                                    Password must be at least 6 characters long
+                                </p>
+                            )}
+
+                            {alreadyRegistered && (
+                                <p className={styles['already-registered']}>
+                                    {' '}
+                                    User with email {regState.form.email}{' '}
+                                    already registered
+                                </p>
+                            )}
+
+                            <button
+                                disabled={disabledBtn}
+                                className={styles['log-in--btn']}
+                                onClick={e => {
+                                    e.preventDefault()
+
+                                    if (regState.badFields.length > 0) {
+                                        setHighlightBadFields(true)
+                                        return
+                                    }
+
+                                    setDisabledBtn(true)
+                                    fetchRegisterApi(regState)
+                                }}
+                            >
+                                {disabledBtn ? 'Verifying...' : 'Register'}
+                            </button>
+                        </form>
+
+                        <p className={styles['register-text']}>
+                            Already have an account?{' '}
+                            <Link href="/login">Log In</Link>
                         </p>
-                    ) : (
-                        <>
-                            <h2 className={styles['title']}>Register</h2>
-
-                            <form className={styles['form']}>
-                                <label htmlFor="name">Name:</label>
-                                <input
-                                    name="name"
-                                    id="name"
-                                    type="text"
-                                    required
-                                    className={`${
-                                        styles['name']
-                                    } ${isBadFieldClass('name')}`}
-                                    onChange={e => {
-                                        dispatcher({
-                                            type: ACTIONS.HANDLE_FORM,
-                                            payload: getInputData(e),
-                                        })
-                                    }}
-                                />
-
-                                <label htmlFor="email">Email:</label>
-                                <input
-                                    name="email"
-                                    id="email"
-                                    type="email"
-                                    required
-                                    className={`${
-                                        styles['email']
-                                    } ${isBadFieldClass('email')}`}
-                                    onChange={e => {
-                                        dispatcher({
-                                            type: ACTIONS.HANDLE_FORM,
-                                            payload: getInputData(e),
-                                        })
-                                    }}
-                                />
-                                {!state.validEmail && (
-                                    <p className={styles['invalid-email']}>
-                                        Invalid Email
-                                    </p>
-                                )}
-
-                                <label htmlFor="password">Password:</label>
-                                <input
-                                    name="password"
-                                    id="password"
-                                    type="password"
-                                    required
-                                    className={`${
-                                        styles['password']
-                                    } ${isBadFieldClass('password')}`}
-                                    onChange={e => {
-                                        dispatcher({
-                                            type: ACTIONS.HANDLE_FORM,
-                                            payload: getInputData(e),
-                                        })
-                                    }}
-                                />
-
-                                {state.badLogin && (
-                                    <p className={styles['bad-login']}>
-                                        Incorrect email or password
-                                    </p>
-                                )}
-
-                                <button
-                                    disabled={disabledBtn}
-                                    className={styles['log-in--btn']}
-                                    onClick={e => {
-                                        e.preventDefault()
-
-                                        if (state.badFields.length > 0) {
-                                            dispatcher({
-                                                type: ACTIONS.SUBMIT_BAD_FORM,
-                                            })
-                                            return
-                                        }
-
-                                        setDisabledBtn(true)
-                                        fetchLoginApi(state)
-                                    }}
-                                >
-                                    {disabledBtn ? 'Verifying...' : 'Register'}
-                                </button>
-                            </form>
-
-                            <p className={styles['register-text']}>
-                                Already have an account?{' '}
-                                <Link href="/login">Log In</Link>
-                            </p>
-                        </>
-                    )}
-                </main>
-            </Layout>
+                    </>
+                )}
+            </main>
         </section>
     )
 }

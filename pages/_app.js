@@ -5,9 +5,11 @@ import { NavBarContextProvider } from '../components/navBarContext'
 function MyApp({ Component, pageProps }) {
     return (
         <NavBarContextProvider>
-            {/* <Layout> */}
-            <Component {...pageProps} />
-            {/* </Layout> */}
+            <div className={'page--container'}>
+                <Layout>
+                    <Component {...pageProps} />
+                </Layout>
+            </div>
         </NavBarContextProvider>
     )
 }

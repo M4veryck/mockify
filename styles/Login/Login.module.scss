@@ -12,6 +12,9 @@
 }
 
 .login--container {
+    width: 95%;
+    max-width: 460px;
+
     display: grid;
     justify-self: center;
     justify-items: center;
@@ -50,7 +53,21 @@
     letter-spacing: 1px;
 }
 
+.description {
+    width: 90%;
+    // max-width: 280px;
+    justify-self: center;
+
+    margin-bottom: 3em;
+
+    font-size: 1.2rem;
+    // text-align: center;
+}
+
 .form {
+    width: 90%;
+    justify-self: center;
+    justify-content: left;
     display: grid;
     * {
         display: block;
@@ -78,6 +95,14 @@
     margin-bottom: 2em;
 
     font-size: $fs-p;
+}
+
+.email {
+    max-width: 340px;
+}
+
+.password {
+    max-width: 340px;
 }
 
 .invalid-email {

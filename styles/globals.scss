@@ -16,3 +16,10 @@ strong {
     font-weight: $bold;
     letter-spacing: 1px;
 }
+
+.page--container {
+    height: fit-content;
+    min-height: 100vh;
+    display: grid;
+    // grid-template-rows: repeat(3, auto);
+}

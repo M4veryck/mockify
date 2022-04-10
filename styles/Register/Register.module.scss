@@ -3,6 +3,7 @@
 
 .name {
     @include font-stack($primary-font);
+    max-width: 340px;
 
     background-color: rgb(252, 252, 252);
     padding: 0.25em 0.5em;
@@ -14,6 +15,34 @@
     font-size: $fs-p;
 }
 
+.invalid-field {
+    width: 75%;
+    max-width: 280px;
+
+    // border-bottom: 1px solid #f02626;
+    margin-top: -1em;
+
+    // text-align: center;
+    color: #f02626;
+    font-size: 0.9rem;
+}
+
 .bad-field {
     border: 2.5px solid #f02626;
+}
+
+.already-registered {
+    width: 75%;
+    max-width: 300px;
+    justify-self: center;
+
+    background-color: lightgray;
+    padding: 1em;
+    border: 1px solid #f02626;
+    border-radius: 5px;
+    // margin-top: -1em;
+
+    text-align: center;
+    color: #f02626;
+    font-size: 0.9rem;
 }
