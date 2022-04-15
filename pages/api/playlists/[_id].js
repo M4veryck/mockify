@@ -14,25 +14,24 @@ export default async function playlists(req, res) {
                 .json({ error: 'You are not allowed to access this resource' })
         }
 
+        const { _id } = req.query
+
         if (req.method === 'GET') {
-            const allPlaylists = await Playlist.find({
-                createdBy: userInfo.userId,
-            })
-            return res.status(200).json({ allPlaylists, userInfo })
+            const singlePlaylist = await Playlist.findById(_id)
+            return res.status(200).json({ singlePlaylist })
         }
 
-        if (req.method === 'POST') {
-            const newPlaylist = await Playlist.create({
-                name: req.body.name,
-                createdBy: req.body.userId,
-            })
-            return res.status(200).json({ newPlaylist })
+        if (req.method === 'PATCH') {
+            const updatedPlaylist = await Playlist.findByIdAndUpdate(
+                _id,
+                { name: req.body.newName },
+                { new: true, runValidators: true, overwrite: false }
+            )
+            return res.status(200).json({ updatedPlaylist })
         }
 
         if (req.method === 'DELETE') {
-            await Playlist.findOneAndDelete({
-                name: req.query.name,
-            })
+            await Playlist.findByIdAndDelete(_id)
             return res.status(200).json({ success: true })
         }
 

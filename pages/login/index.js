@@ -3,8 +3,13 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 import styles from '../../styles/Login/Login.module.scss'
-import useForm, { ACTIONS } from '../../components/hooks/useForm'
+import useLogin, { LOGIN_ACTIONS } from '../../components/hooks/useLogin'
 import { getInputData } from '../../components/utils/utils'
+import { PlaylistsContextConsumer } from '../../components/playlistsContext'
+import {
+    getAllData,
+    PLAYLISTS_ACTIONS,
+} from '../../components/hooks/usePlaylists'
 
 const initialState = {
     form: {
@@ -15,19 +20,21 @@ const initialState = {
     validEmail: true,
     badFields: ['email', 'password'],
     highlightBadFields: false,
+    disabledBtn: false,
     badLogin: false,
+    fetchInProgress: false,
 }
 
 export default function Login() {
-    const { state, dispatcher } = useForm(initialState)
-    const [disabledBtn, setDisabledBtn] = useState(false)
+    const { logState, logDispatcher } = useLogin(initialState)
+    const { playlistsDispatcher } = PlaylistsContextConsumer()
     const [serverError, setServerError] = useState(false)
     const router = useRouter()
 
     const isBadFieldClass = id => {
         if (
-            state.highlightBadFields &&
-            state.badFields.some(field => field === id)
+            logState.highlightBadFields &&
+            logState.badFields.some(field => field === id)
         ) {
             return styles['bad-field']
         }
@@ -35,44 +42,45 @@ export default function Login() {
         return ''
     }
 
-    const fetchLoginApi = async state => {
-        try {
-            const res = await fetch('/api/auth/login', {
-                method: 'POST',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(state.form),
-            })
+    const fetchLoginApi = async (logState, getAllData) => {
+        if (!logState.fetchInProgress) {
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(logState.form),
+                })
 
-            const data = await res.json()
+                const data = await res.json()
 
-            if (res.ok) {
-                localStorage.setItem('userToken', data.token)
-                document.cookie = `userToken=${data.token}`
-                router.push('/playlists')
-                return
-            }
+                if (res.ok) {
+                    localStorage.setItem('userToken', data.token)
+                    await getAllData(playlistsDispatcher)
+                    router.push('/playlists')
+                    return
+                }
 
-            const errorCode = data.error_code || null
+                const errorCode = data.error_code || null
 
-            if (
-                errorCode === 'wrongPassword' ||
-                errorCode === 'emailNotFound'
-            ) {
-                setDisabledBtn(false)
-                dispatcher({ type: ACTIONS.HANDLE_BAD_LOGIN })
-                return
-            }
+                if (
+                    errorCode === 'wrongPassword' ||
+                    errorCode === 'emailNotFound'
+                ) {
+                    logDispatcher({ type: LOGIN_ACTIONS.BAD_LOGIN })
+                    return
+                }
 
-            if (res.status === 500) {
+                if (res.status === 500) {
+                    setServerError(true)
+                    return
+                }
+            } catch (err) {
+                console.log(err)
                 setServerError(true)
-                return
             }
-        } catch (err) {
-            console.log(err)
-            setServerError(true)
         }
     }
 
@@ -104,13 +112,13 @@ export default function Login() {
                                     styles['email']
                                 } ${isBadFieldClass('email')}`}
                                 onChange={e => {
-                                    dispatcher({
-                                        type: ACTIONS.HANDLE_FORM,
+                                    logDispatcher({
+                                        type: LOGIN_ACTIONS.HANDLE_FORM,
                                         payload: getInputData(e),
                                     })
                                 }}
                             />
-                            {!state.validEmail && (
+                            {!logState.validEmail && (
                                 <p className={styles['invalid-email']}>
                                     Invalid Email
                                 </p>
@@ -126,37 +134,34 @@ export default function Login() {
                                     styles['password']
                                 } ${isBadFieldClass('password')}`}
                                 onChange={e => {
-                                    dispatcher({
-                                        type: ACTIONS.HANDLE_FORM,
+                                    logDispatcher({
+                                        type: LOGIN_ACTIONS.HANDLE_FORM,
                                         payload: getInputData(e),
                                     })
                                 }}
                             />
 
-                            {state.badLogin && (
+                            {logState.badLogin && (
                                 <p className={styles['bad-login']}>
                                     Incorrect email or password
                                 </p>
                             )}
 
                             <button
-                                disabled={disabledBtn}
+                                disabled={logState.disabledBtn}
                                 className={styles['log-in--btn']}
                                 onClick={e => {
                                     e.preventDefault()
 
-                                    if (state.badFields.length > 0) {
-                                        dispatcher({
-                                            type: ACTIONS.SUBMIT_BAD_FORM,
-                                        })
-                                        return
-                                    }
-
-                                    setDisabledBtn(true)
-                                    fetchLoginApi(state)
+                                    logDispatcher({
+                                        type: LOGIN_ACTIONS.SEND_LOGIN,
+                                        payload: fetchLoginApi,
+                                    })
                                 }}
                             >
-                                {disabledBtn ? 'Verifying...' : 'Log In'}
+                                {logState.disabledBtn
+                                    ? 'Verifying...'
+                                    : 'Log In'}
                             </button>
                         </form>
 

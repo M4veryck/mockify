@@ -1,22 +1,23 @@
 import { useReducer } from 'react'
+import { getAllData } from '../playlists/CRUD'
 import { filterEmptyFields, isValidEmail } from '../utils/utils'
 
-export const ACTIONS = {
+export const LOGIN_ACTIONS = {
     HANDLE_FORM: 'handle-form',
-    SUBMIT_BAD_FORM: 'submit-bad-form',
-    HANDLE_BAD_LOGIN: 'handle-bad-login',
+    SEND_LOGIN: 'send-login',
+    BAD_LOGIN: 'bad-login',
 }
 
-export default function useForm(initialState) {
-    const [state, dispatcher] = useReducer(reducer, initialState)
+export default function useLogin(initialState) {
+    const [logState, logDispatcher] = useReducer(logReducer, initialState)
 
-    function reducer(state, action) {
+    function logReducer(logState, action) {
         switch (action.type) {
-            case ACTIONS.HANDLE_FORM:
+            case LOGIN_ACTIONS.HANDLE_FORM:
                 const { name, value } = action.payload
 
                 const newForm = {
-                    ...state.form,
+                    ...logState.form,
                     [name]: value,
                 }
 
@@ -33,7 +34,7 @@ export default function useForm(initialState) {
                     badLogin: false,
                 }
 
-                if (name === 'email' || state.emailTyped) {
+                if (name === 'email' || logState.emailTyped) {
                     return {
                         ...genericNewState,
                         emailTyped: true,
@@ -47,22 +48,36 @@ export default function useForm(initialState) {
                     validEmail: true,
                 }
 
-            case ACTIONS.SUBMIT_BAD_FORM:
-                return {
-                    ...state,
-                    highlightBadFields: true,
+            case LOGIN_ACTIONS.SEND_LOGIN:
+                if (logState.badFields.length > 0) {
+                    return {
+                        ...logState,
+                        highlightBadFields: true,
+                    }
                 }
 
-            case ACTIONS.HANDLE_BAD_LOGIN:
+                const fetchLoginApi = action.payload
+
+                fetchLoginApi(logState, getAllData)
+
                 return {
-                    ...state,
+                    ...logState,
+                    disabledBtn: true,
+                    fetchInProgress: true,
+                }
+
+            case LOGIN_ACTIONS.BAD_LOGIN:
+                return {
+                    ...logState,
+                    disabledBtn: false,
                     badLogin: true,
+                    fetchInProgress: false,
                 }
 
             default:
-                return state
+                return logState
         }
     }
 
-    return { state, dispatcher }
+    return { logState, logDispatcher }
 }

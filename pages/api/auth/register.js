@@ -33,6 +33,7 @@ export default async function register(req, res) {
             token,
         })
     } catch (err) {
+        console.log('shouldnt get here')
         return res.status(500).json({
             server_error: err.message,
         })

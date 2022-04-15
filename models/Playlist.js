@@ -4,9 +4,12 @@ const PlaylistSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'name missing'],
+        unique: true,
+        // dropDups: true,
     },
     createdBy: {
-        type: mongoose.Types.ObjectId,
+        // type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: [true, 'Please provide user'],
     },

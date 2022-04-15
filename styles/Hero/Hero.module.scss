@@ -29,12 +29,12 @@
 }
 
 .name {
+    @include font-stack('Montserrat');
+
     width: 100%;
     height: fit-content;
 
     margin-block: 0;
-
-    @include font-stack('Nunito');
 
     font-size: $fs-h1;
     font-weight: 700;
@@ -57,6 +57,7 @@
 }
 
 .log-in--btn {
+    @include font-stack('Montserrat');
     justify-self: center;
     cursor: pointer;
     height: fit-content;

@@ -1,6 +1,12 @@
-import styles from '../../styles/Playlists/Playlists.module.scss'
+import Link from 'next/link'
 
-export default function Playlist({ name, createdAt }) {
+import styles from '../../styles/Playlists/Playlists.module.scss'
+import { PLAYLISTS_ACTIONS } from '../hooks/usePlaylists'
+import { PlaylistsContextConsumer } from '../playlistsContext'
+
+export default function Playlist({ _id, name, createdAt }) {
+    const { playlistsDispatcher } = PlaylistsContextConsumer()
+
     let formatedDate = ''
     const dateArr = createdAt.split('-')
     formatedDate += dateArr[1]
@@ -8,12 +14,27 @@ export default function Playlist({ name, createdAt }) {
     formatedDate += dateArr[2].slice(0, 2)
     formatedDate += '/'
     formatedDate += dateArr[0]
+
     return (
         <div className={styles['playlist']}>
             <h2 className={styles['playlist--title']}>{name}</h2>
-            <p className={styles['playlist--date']}>
-                Created at: {formatedDate}
-            </p>
+            <p className={styles['playlist--date']}>{formatedDate}</p>
+
+            <Link href={`/playlists/${_id}`}>
+                <a className={styles['edit--btn']}>Edit</a>
+            </Link>
+
+            <button
+                className={styles['delete--btn']}
+                onClick={e => {
+                    playlistsDispatcher({
+                        type: PLAYLISTS_ACTIONS.SEND_DELETE,
+                        _id,
+                    })
+                }}
+            >
+                Delete
+            </button>
         </div>
     )
 }

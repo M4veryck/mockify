@@ -7,7 +7,7 @@ import useCurrentSection from '../hooks/useCurrentSection'
 
 export default function Hero() {
     const heroRef = useRef()
-    useCurrentSection(heroRef, '-50%', '/')
+    // useCurrentSection(heroRef, '-50%', '/')
 
     return (
         <section className={styles['hero--section']} id="main" ref={heroRef}>

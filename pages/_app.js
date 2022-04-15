@@ -1,16 +1,19 @@
 import '../styles/globals.scss'
 import Layout from '../components/layout/layout'
 import { NavBarContextProvider } from '../components/navBarContext'
+import { PlaylistsContextProvider } from '../components/playlistsContext'
 
 function MyApp({ Component, pageProps }) {
     return (
-        <NavBarContextProvider>
+        // <NavBarContextProvider>
+        <PlaylistsContextProvider>
             <div className={'page--container'}>
                 <Layout>
                     <Component {...pageProps} />
                 </Layout>
             </div>
-        </NavBarContextProvider>
+        </PlaylistsContextProvider>
+        // </NavBarContextProvider>
     )
 }
 

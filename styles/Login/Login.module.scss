@@ -34,13 +34,14 @@
 }
 
 .server-error {
-    color: #f02626;
+    color: $clr-error;
     font-size: 1.2rem;
     text-align: center;
     line-height: 1.4;
 }
 
 .title {
+    @include font-stack('Montserrat');
     width: fit-content;
 
     padding-bottom: 0.1em;
@@ -108,18 +109,18 @@
 .invalid-email {
     width: fit-content;
 
-    border-bottom: 1px solid #f02626;
+    border-bottom: 1px solid $clr-error;
     margin-top: -1em;
 
-    color: #f02626;
+    color: $clr-error;
 }
 
 .bad-field {
-    border: 2.5px solid #f02626;
+    border: 2.5px solid $clr-error;
 }
 
 .log-in--btn {
-    @include font-stack($primary-font);
+    @include font-stack('Montserrat');
     width: fit-content;
     display: block;
     justify-self: right;
@@ -159,7 +160,7 @@
     border: 2px solid $clr-dark;
     border-radius: 50px;
 
-    color: #f02626;
+    color: $clr-error;
     font-weight: 600;
     text-align: center;
     font-size: 1rem;

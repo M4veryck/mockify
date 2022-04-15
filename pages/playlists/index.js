@@ -1,119 +1,109 @@
-import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
+
 import styles from '../../styles/Playlists/Playlists.module.scss'
-import { addPlaylist, getAllPlaylists } from '../../components/playlists/utils'
-import Playlist from '../../components/playlists/playlist'
+import { getInputData } from '../../components/utils/utils'
+import { PLAYLISTS_ACTIONS } from '../../components/hooks/usePlaylists'
+import { PlaylistsContextConsumer } from '../../components/playlistsContext'
 
 export default function Playlists() {
-    const [userAndPlaylists, setUserAndPlaylists] = useState(null)
-    const [allPlaylists, setAllPlaylists] = useState(null)
-    const [displayAdd, setDisplayAdd] = useState(false)
-    const [addFormData, setAddFormData] = useState({
-        name: '',
-    })
-    const [highlightName, setHighlightName] = useState(false)
+    const { playlistsState, playlistsDispatcher } = PlaylistsContextConsumer()
+    const router = useRouter()
 
-    const handleAddForm = e => {
-        const value = e.target.value
-        setHighlightName(false)
-        setAddFormData({ name: value })
+    if (playlistsState.redirectToLogin) {
+        router.push('/login')
     }
 
-    const updateUserAndPlaylists = data => {
-        setUserAndPlaylists(data)
+    if (playlistsState.redirectToPlaylist) {
+        router.push(`/playlists/${playlistsState.nameToGet}`)
     }
 
-    useEffect(() => {
-        getAllPlaylists(updateUserAndPlaylists)
-    }, [])
-
-    useEffect(() => {
-        if (userAndPlaylists) {
-            setAllPlaylists(
-                userAndPlaylists.allPlaylists.map((item, idx) => {
-                    const { name, createdAt, _id } = item
-                    return (
-                        <Playlist key={_id} name={name} createdAt={createdAt} />
-                    )
-                })
-            )
-        }
-    }, [userAndPlaylists])
-
-    console.log(userAndPlaylists)
+    if (!playlistsState.allData) {
+        return (
+            <div className={styles['playlists--processing']}>Processing...</div>
+        )
+    }
 
     return (
         <section className={styles['playlists--section']}>
-            {userAndPlaylists ? (
-                <main className={styles['playlists--container']}>
-                    <h1 className={styles['title']}>
-                        Hi {userAndPlaylists.userInfo.name}!
-                    </h1>
-                    {!userAndPlaylists.allPlaylists.length ? (
-                        <p className={styles['no-playlists']}>
-                            You currently have no playlists
-                        </p>
-                    ) : (
-                        <>
-                            <p>Your playlists:</p>
-                            {allPlaylists}
-                        </>
-                    )}
-                    {displayAdd ? (
-                        <form className={styles['add-form']}>
-                            <label htmlFor="name">Name:</label>
-                            <input
-                                name="name"
-                                type="text"
-                                value={addFormData.name}
-                                required
-                                className={`${styles['name']} ${
-                                    highlightName && styles['highlight-name']
-                                }`}
-                                onChange={e => handleAddForm(e)}
-                            />
-                            {/* <div className={styles['add-btns--container']}> */}
-                            <button
-                                className={styles['cancel--btn']}
-                                onClick={e => {
-                                    e.preventDefault()
-                                    setDisplayAdd(false)
-                                }}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                className={styles['add--btn']}
-                                onClick={e => {
-                                    e.preventDefault()
-                                    if (!addFormData.name.length) {
-                                        setHighlightName(true)
-                                        return
-                                    }
-                                    addPlaylist(
-                                        addFormData,
-                                        userAndPlaylists,
-                                        updateUserAndPlaylists
-                                    )
-                                }}
-                            >
-                                Submit
-                            </button>
-                            {/* </div> */}
-                        </form>
-                    ) : (
+            <main className={styles['playlists--container']}>
+                <h1 className={styles['title']}>
+                    Hi {playlistsState.allData.userInfo.name}!
+                </h1>
+                {!playlistsState.allData.allPlaylists.length ? (
+                    <p className={styles['no-playlists']}>
+                        You currently have no playlists
+                    </p>
+                ) : (
+                    <>
+                        <p>Your playlists:</p>
+                        <div className={styles['playlists-comp--container']}>
+                            {playlistsState.playlistsComponents}
+                        </div>
+                    </>
+                )}
+                {playlistsState.displayForm ? (
+                    <form className={styles['add-form']}>
+                        {playlistsState.duplicated && (
+                            <p className={styles['already-exists']}>
+                                Playlist '{playlistsState.name}' already exists
+                            </p>
+                        )}
+                        <label htmlFor="newName">Name:</label>
+                        <input
+                            name="newName"
+                            type="text"
+                            value={playlistsState.newName}
+                            id="newName"
+                            required
+                            className={`${styles['name']} ${
+                                playlistsState.highlightName &&
+                                styles['highlight-name']
+                            }`}
+                            onChange={e =>
+                                playlistsDispatcher({
+                                    type: PLAYLISTS_ACTIONS.HANDLE_FORM,
+                                    payload: getInputData(e),
+                                })
+                            }
+                        />
                         <button
-                            className={styles['create--btn']}
+                            className={styles['cancel--btn']}
                             onClick={e => {
-                                setDisplayAdd(true)
+                                e.preventDefault()
+                                playlistsDispatcher({
+                                    type: PLAYLISTS_ACTIONS.TOGGLE_FORM,
+                                    display: false,
+                                })
                             }}
                         >
-                            Create playlist
+                            Cancel
                         </button>
-                    )}
-                </main>
-            ) : (
-                <div className={styles['playlists--processing']}></div>
-            )}
+                        <button
+                            className={styles['add--btn']}
+                            onClick={e => {
+                                e.preventDefault()
+                                playlistsDispatcher({
+                                    type: PLAYLISTS_ACTIONS.SEND_ADD,
+                                })
+                            }}
+                        >
+                            Submit
+                        </button>
+                    </form>
+                ) : (
+                    <button
+                        className={styles['create--btn']}
+                        onClick={e => {
+                            playlistsDispatcher({
+                                type: PLAYLISTS_ACTIONS.TOGGLE_FORM,
+                                display: true,
+                            })
+                        }}
+                    >
+                        Create playlist
+                    </button>
+                )}
+            </main>
         </section>
     )
 }
