@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 
 import Layout from '../components/layout/layout'
 import Head from 'next/head'
@@ -7,9 +8,22 @@ import AboutMe from './#about'
 import Projects from './#projects'
 
 import styles from '../styles/Home.module.scss'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { PlaylistsContextConsumer } from '../components/playlistsContext'
+import { getAllData } from '../components/playlists/CRUD'
 
 export default function Home() {
+    const { toPlaylists } = PlaylistsContextConsumer()
+    const router = useRouter()
+
+    console.log(toPlaylists)
+
+    useEffect(() => {
+        if (toPlaylists) {
+            router.push('/playlists')
+        }
+    }, [toPlaylists])
+
     return (
         <>
             <Head>

@@ -19,7 +19,22 @@ export default function Playlists() {
 
     if (!playlistsState.allData) {
         return (
-            <div className={styles['playlists--processing']}>Processing...</div>
+            <div className={styles['playlists--processing']}>
+                <h1 className={styles['processing']}>Processing...</h1>
+            </div>
+        )
+    }
+
+    if (playlistsState.serverError) {
+        return (
+            <div className={styles['server-error']}>
+                <h1 className={styles['sad-face']}>:(</h1>
+                <p className={styles['server-error--message']}>
+                    500 Error <br /> <br />
+                    My server ran into a problem (sorry for the inconviniences),
+                    please try again later.
+                </p>
+            </div>
         )
     }
 
@@ -27,7 +42,10 @@ export default function Playlists() {
         <section className={styles['playlists--section']}>
             <main className={styles['playlists--container']}>
                 <h1 className={styles['title']}>
-                    Hi {playlistsState.allData.userInfo.name}!
+                    Hi{' '}
+                    <span className={styles['user-name']}>
+                        {playlistsState.allData.userInfo.name}
+                    </span>
                 </h1>
                 {!playlistsState.allData.allPlaylists.length ? (
                     <p className={styles['no-playlists']}>
@@ -35,11 +53,19 @@ export default function Playlists() {
                     </p>
                 ) : (
                     <>
-                        <p>Your playlists:</p>
+                        <p className={styles['your-playlists--cap']}>
+                            Your playlists:
+                        </p>
                         <div className={styles['playlists-comp--container']}>
                             {playlistsState.playlistsComponents}
                         </div>
                     </>
+                )}
+                {playlistsState.operationServerError && (
+                    <p className={styles['add-server-error']}>
+                        Error 500: <br /> Server Error while trying to perform
+                        the operation, please try again.
+                    </p>
                 )}
                 {playlistsState.displayForm ? (
                     <form className={styles['add-form']}>

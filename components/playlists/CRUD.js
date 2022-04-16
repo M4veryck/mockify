@@ -22,14 +22,22 @@ export async function getAllData(playlistsDispatcher) {
             return null
         }
 
-        playlistsDispatcher({
-            type: PLAYLISTS_ACTIONS.REFRESH_ALL_DATA,
-            payload: data,
-        })
+        if (res.ok) {
+            playlistsDispatcher({
+                type: PLAYLISTS_ACTIONS.REFRESH_ALL_DATA,
+                payload: data,
+            })
+            return true
+        }
 
-        return null
+        playlistsDispatcher({
+            type: PLAYLISTS_ACTIONS.SERVER_ERROR,
+        })
     } catch (err) {
         console.log(err)
+        playlistsDispatcher({
+            type: PLAYLISTS_ACTIONS.SERVER_ERROR,
+        })
         return null
     }
 }
@@ -81,15 +89,24 @@ export async function addPlaylist(playlistsState, playlistsDispatcher) {
             playlistsDispatcher({
                 type: PLAYLISTS_ACTIONS.ADD_SUCCESS,
             })
+            return null
         }
 
         if (data.error_code === 11000) {
             playlistsDispatcher({
                 type: PLAYLISTS_ACTIONS.DUPLICATED,
             })
+            return null
         }
+
+        playlistsDispatcher({
+            type: PLAYLISTS_ACTIONS.OP_SERVER_ERROR,
+        })
     } catch (err) {
         console.log(err)
+        playlistsDispatcher({
+            type: PLAYLISTS_ACTIONS.OP_SERVER_ERROR,
+        })
     } finally {
         return null
     }
@@ -148,13 +165,17 @@ export async function deletePlaylist(playlistsState, playlistsDispatcher) {
             playlistsDispatcher({
                 type: PLAYLISTS_ACTIONS.DELETE_SUCCESS,
             })
+            return null
         }
 
-        if (res.status === 500) {
-            console.log(data)
-        }
+        playlistsDispatcher({
+            type: PLAYLISTS_ACTIONS.OP_SERVER_ERROR,
+        })
     } catch (err) {
         console.log(err)
+        playlistsDispatcher({
+            type: PLAYLISTS_ACTIONS.OP_SERVER_ERROR,
+        })
     } finally {
         return null
     }

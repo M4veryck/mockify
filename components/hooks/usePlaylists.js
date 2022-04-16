@@ -16,6 +16,8 @@ const initialState = {
     refreshData: false,
     idToDelete: '',
     redirectToPlaylists: false,
+    serverError: false,
+    operationServerError: false,
 }
 
 export const PLAYLISTS_ACTIONS = {
@@ -23,6 +25,7 @@ export const PLAYLISTS_ACTIONS = {
     HANDLE_FORM: 'handle-form',
     SEND_ADD: 'send-add',
     ADD_SUCCESS: 'add-success',
+    OP_SERVER_ERROR: 'op-server-error',
     DUPLICATED: 'duplicated',
     SEND_DELETE: 'send-delete',
     DELETE_SUCCESS: 'delete-success',
@@ -30,9 +33,10 @@ export const PLAYLISTS_ACTIONS = {
     REDIRECT_TO_LOGIN: 'redirect-to-login',
     UPDATE_SUCCESS: 'update-success',
     STOP_REDIRECT: 'stop-redirect',
+    SERVER_ERROR: 'server-error',
 }
 
-export default function usePlaylists(_id = '') {
+export default function usePlaylists() {
     const router = useRouter()
     const [fetchAdd, setFetchAdd] = useState(false)
     const [fetchDelete, setFetchDelete] = useState(false)
@@ -57,6 +61,7 @@ export default function usePlaylists(_id = '') {
                     [name]: value,
                     highlightName: false,
                     duplicated: false,
+                    operationServerError: false,
                 }
 
             case PLAYLISTS_ACTIONS.SEND_ADD:
@@ -77,6 +82,12 @@ export default function usePlaylists(_id = '') {
                     newName: '',
                     displayForm: false,
                     refreshData: true,
+                }
+
+            case PLAYLISTS_ACTIONS.OP_SERVER_ERROR:
+                return {
+                    ...playlistsState,
+                    operationServerError: true,
                 }
 
             case PLAYLISTS_ACTIONS.DUPLICATED:
@@ -141,6 +152,12 @@ export default function usePlaylists(_id = '') {
                 return {
                     ...playlistsState,
                     redirectToPlaylists: false,
+                }
+
+            case PLAYLISTS_ACTIONS.SERVER_ERROR:
+                return {
+                    ...playlistsState,
+                    serverError: true,
                 }
 
             default:

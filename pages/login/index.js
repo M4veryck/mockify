@@ -26,10 +26,15 @@ const initialState = {
 }
 
 export default function Login() {
+    const { toPlaylists } = PlaylistsContextConsumer()
     const { logState, logDispatcher } = useLogin(initialState)
     const { playlistsDispatcher } = PlaylistsContextConsumer()
     const [serverError, setServerError] = useState(false)
     const router = useRouter()
+
+    if (toPlaylists) {
+        router.push('/playlists')
+    }
 
     const isBadFieldClass = id => {
         if (

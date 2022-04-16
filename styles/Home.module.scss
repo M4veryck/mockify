@@ -10,6 +10,6 @@
 .page--container {
     @include background-image(
         $clr-soft-dark,
-        url('/backgrounds/main-background.svg')
+        url('/backgrounds/alt-background.svg')
     );
 }

@@ -4,13 +4,14 @@ import Link from 'next/link'
 import styles from '../../styles/Register/Register.module.scss'
 import { getInputData } from '../../components/utils/utils'
 import useRegister, { REG_ACTIONS } from '../../components/hooks/useRegister'
+import { PlaylistsContextConsumer } from '../../components/playlistsContext'
 
 export default function Register() {
-    const { regState, regDispatcher, setSendFetch } =
-        useRegister(regInitialState)
+    const { toPlaylists } = PlaylistsContextConsumer()
+    const { regState, regDispatcher, setSendFetch } = useRegister()
     const router = useRouter()
 
-    if (regState.redirect) router.push('/playlists')
+    if (regState.redirect || toPlaylists) router.push('/playlists')
 
     const isBadFieldClass = id => {
         if (

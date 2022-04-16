@@ -6,14 +6,14 @@
 
     @include background-image(
         $clr-soft-dark,
-        url('/backgrounds/main-background.svg')
+        url('/backgrounds/alt-inverted-background.svg')
     );
     color: $clr-soft-light;
 }
 
 .login--container {
     width: 95%;
-    max-width: 460px;
+    max-width: 420px;
 
     display: grid;
     justify-self: center;
@@ -23,9 +23,9 @@
     // background-color: $clr-soft-dark;
     background: rgb(17, 16, 22);
     background: linear-gradient(
-        180deg,
+        0deg,
         rgba(17, 16, 22, 1) 33%,
-        rgba(0, 0, 0, 0.6754901789817489) 99%
+        rgba(0, 0, 0, 0.8) 99%
     );
     // background-color: rgb(32, 32, 32);
     padding: 3em 2em;
@@ -70,6 +70,7 @@
     justify-self: center;
     justify-content: left;
     display: grid;
+    grid-template-columns: 1fr;
     * {
         display: block;
 
@@ -96,14 +97,6 @@
     margin-bottom: 2em;
 
     font-size: $fs-p;
-}
-
-.email {
-    max-width: 340px;
-}
-
-.password {
-    max-width: 340px;
 }
 
 .invalid-email {

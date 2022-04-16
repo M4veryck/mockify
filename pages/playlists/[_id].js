@@ -88,7 +88,11 @@ export default function PlaylistToEdit() {
     }, [fetchUpdate])
 
     if (!onePlaylistState.onePlaylistData) {
-        return <div>Processing...</div>
+        return (
+            <div className={styles['playlists--processing']}>
+                <h1 className={styles['processing']}>Processing...</h1>
+            </div>
+        )
     }
 
     const prevName = onePlaylistState.onePlaylistData.singlePlaylist.name
@@ -108,7 +112,9 @@ export default function PlaylistToEdit() {
                 <h2 className={styles['single-playlist--title']}>
                     Previous name:
                 </h2>
-                <p className={styles['playlist-prev-name']}>{prevName}</p>
+                <p className={styles['playlist-prev-name']} title={prevName}>
+                    {prevName}
+                </p>
 
                 <form className={styles['update-form']}>
                     <label htmlFor="new-name">New name:</label>

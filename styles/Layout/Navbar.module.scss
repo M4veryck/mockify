@@ -32,7 +32,29 @@
     color: $clr-light;
     font-size: $fs-navLink;
     text-decoration: none;
-    letter-spacing: 1px;
+    letter-spacing: 0.05em;
+}
+
+.nav-link.log-out {
+    @include font-stack('Inter');
+    cursor: pointer;
+
+    background: none;
+    // padding-bottom: 0.1em;
+    border: none;
+    // border-bottom: 2px solid rgb(216, 17, 17);
+
+    color: rgb(216, 17, 17);
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+
+    &:hover,
+    &:focus-visible {
+        // transform: scale(1.05);
+
+        color: rgb(255, 25, 25);
+    }
 }
 
 .nav-open {

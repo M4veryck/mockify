@@ -8,12 +8,12 @@
     position: relative;
     z-index: 1;
 
-    // @include background-image(
-    //     $clr-soft-dark,
-    //     url('/backgrounds/main-background.svg')
-    // );
+    @include background-image(
+        $clr-soft-light,
+        url('/backgrounds/alt-inverted-background.svg')
+    );
 
-    color: $clr-soft-light;
+    color: $clr-light;
 }
 
 .hero--container {
@@ -28,7 +28,7 @@
     margin-top: 5em;
 }
 
-.name {
+.title {
     @include font-stack('Montserrat');
 
     width: 100%;
@@ -42,7 +42,7 @@
 }
 
 .word-new {
-    color: #2fd819;
+    color: #1ed760;
 }
 
 .caption {
@@ -51,7 +51,7 @@
 
     margin: 1em 0 0;
 
-    color: #d6d6d6;
+    color: #1b1b1b;
     font-weight: 700;
     font-size: $fs-caption;
 }
@@ -78,14 +78,13 @@
 
     &:hover,
     &:focus-visible {
-        background-color: $clr-soft-light;
-
-        color: $clr-soft-dark;
+        background-color: #1b1b1b;
+        // color: $clr-soft-dark;
     }
 }
 
 @mixin increase-fs-hero($add) {
-    .name {
+    .title {
         font-size: $fs-h1 + $add + 0.3;
     }
 

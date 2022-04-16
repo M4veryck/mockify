@@ -17,7 +17,9 @@ export default function Playlist({ _id, name, createdAt }) {
 
     return (
         <div className={styles['playlist']}>
-            <h2 className={styles['playlist--title']}>{name}</h2>
+            <h2 className={styles['playlist--title']} title={name}>
+                {name}
+            </h2>
             <p className={styles['playlist--date']}>{formatedDate}</p>
 
             <Link href={`/playlists/${_id}`}>

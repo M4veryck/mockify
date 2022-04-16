@@ -13,7 +13,7 @@ export default function Hero() {
         <section className={styles['hero--section']} id="main" ref={heroRef}>
             <div className={styles['hero--container']}>
                 {/* <div className={styles['name-caption--container']}> */}
-                <h1 className={styles['name']}>
+                <h1 className={styles['title']}>
                     Discover <br />{' '}
                     <span className={styles['word-new']}>new</span> <br />
                     music

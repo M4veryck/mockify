@@ -1,55 +1,68 @@
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+
 import styles from '../../styles/Layout/Navbar.module.scss'
-import { NavBarContextConsumer } from '../navBarContext'
+import { PlaylistsContextConsumer } from '../playlistsContext'
 
 export default function Navbar({ navOn, toggleNav }) {
-    // const { manageClicked, currentSection } = NavBarContextConsumer()
+    const { logOff } = PlaylistsContextConsumer()
+    const router = useRouter()
+    const [inPlaylists, setInPlaylists] = useState(false)
+
+    useEffect(() => {
+        const pathnameArr = window.location.pathname.split('/')
+        if (pathnameArr.some(path => path === 'playlists')) {
+            setInPlaylists(true)
+            return
+        }
+        setInPlaylists(false)
+    }, [router])
 
     return (
         <nav className={`${styles['nav']} ${navOn && styles['nav-open']}`}>
-            <ul
-                className={styles['nav-list']}
-                // onClick={manageClicked}
-            >
-                {/* <li>
-                    <Link href="/playlists">
-                        <a
-                            className={`${styles['nav-link']} ${
-                                false === '/' && styles['current']
-                            }`}
-                            onClick={() => {
-                                manageClicked()
-                                toggleNav()
+            <ul className={styles['nav-list']}>
+                {inPlaylists ? (
+                    <li>
+                        <button
+                            className={`${styles['nav-link']} ${styles['log-out']}`}
+                            onClick={e => {
+                                logOff()
                             }}
                         >
-                            My Playlists
-                        </a>
-                    </Link>
-                </li> */}
-                <li>
-                    <Link href="/register">
-                        <a
-                            className={`${styles['nav-link']} ${
-                                false === '/#projects' && styles['current']
-                            }`}
-                            onClick={toggleNav}
-                        >
-                            Register
-                        </a>
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/login">
-                        <a
-                            className={`${styles['nav-link']} ${
-                                false === '/contact' && styles['current']
-                            }`}
-                            onClick={toggleNav}
-                        >
-                            Log in
-                        </a>
-                    </Link>
-                </li>
+                            Log out
+                        </button>
+                    </li>
+                ) : (
+                    <>
+                        <li>
+                            <Link href="/register">
+                                <a
+                                    className={`${styles['nav-link']} ${
+                                        false === '/#projects' &&
+                                        styles['current']
+                                    }`}
+                                    onClick={toggleNav}
+                                >
+                                    Register
+                                </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/login">
+                                <a
+                                    className={`${styles['nav-link']} ${
+                                        false === '/contact' &&
+                                        styles['current']
+                                    }`}
+                                    onClick={toggleNav}
+                                >
+                                    Log in
+                                </a>
+                            </Link>
+                        </li>
+                    </>
+                )}
             </ul>
         </nav>
     )
