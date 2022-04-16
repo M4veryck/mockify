@@ -34,7 +34,6 @@ export async function getAllData(playlistsDispatcher) {
             type: PLAYLISTS_ACTIONS.SERVER_ERROR,
         })
     } catch (err) {
-        console.log(err)
         playlistsDispatcher({
             type: PLAYLISTS_ACTIONS.SERVER_ERROR,
         })
@@ -60,11 +59,16 @@ export async function getPlaylist(_id, onePlaylistDispatcher) {
                 type: ONE_PLAYLIST_ACTIONS.GET_ONE_PLAYLIST_DATA,
                 payload: data,
             })
-            return null
+            return true
         }
+
+        onePlaylistDispatcher({
+            type: ONE_PLAYLIST_ACTIONS.SERVER_ERROR,
+        })
     } catch (err) {
-        console.log(err)
-        return null
+        onePlaylistDispatcher({
+            type: ONE_PLAYLIST_ACTIONS.SERVER_ERROR,
+        })
     }
 }
 
@@ -103,7 +107,6 @@ export async function addPlaylist(playlistsState, playlistsDispatcher) {
             type: PLAYLISTS_ACTIONS.OP_SERVER_ERROR,
         })
     } catch (err) {
-        console.log(err)
         playlistsDispatcher({
             type: PLAYLISTS_ACTIONS.OP_SERVER_ERROR,
         })
@@ -140,9 +143,12 @@ export async function updatePlaylist(
             onePlaylistDispatcher({
                 type: ONE_PLAYLIST_ACTIONS.UPDATE_DUPLICATED,
             })
+            return
         }
+
+        playlistsDispatcher({ type: PLAYLISTS_ACTIONS.UPDATE_ERROR })
     } catch (err) {
-        console.log(err)
+        playlistsDispatcher({ type: PLAYLISTS_ACTIONS.UPDATE_ERROR })
     } finally {
         return null
     }
@@ -172,7 +178,6 @@ export async function deletePlaylist(playlistsState, playlistsDispatcher) {
             type: PLAYLISTS_ACTIONS.OP_SERVER_ERROR,
         })
     } catch (err) {
-        console.log(err)
         playlistsDispatcher({
             type: PLAYLISTS_ACTIONS.OP_SERVER_ERROR,
         })

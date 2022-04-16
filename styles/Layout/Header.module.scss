@@ -18,6 +18,14 @@
     padding-inline: 5%;
 }
 
+.assistive-text {
+    height: 1px;
+    width: 1px;
+    position: absolute;
+    overflow: hidden;
+    top: -10px;
+}
+
 .toggle-nav {
     position: absolute;
     right: 1em;

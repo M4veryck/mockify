@@ -25,7 +25,7 @@ export default function Header() {
 
     return (
         <header className={styles['header']} id="header">
-            <Link href="/#main">
+            <Link href="/">
                 <a className={styles['logo--link']}>
                     <Image
                         src="/logos/mockify-logo.svg"
@@ -34,6 +34,9 @@ export default function Header() {
                         height={50}
                         className={styles['logo']}
                     />
+                    <span className={styles['assistive-text']}>
+                        Website Icon. Go to home page
+                    </span>
                 </a>
             </Link>
             <button

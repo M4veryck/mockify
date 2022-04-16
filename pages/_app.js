@@ -1,13 +1,6 @@
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-
 import '../styles/globals.scss'
 import Layout from '../components/layout/layout'
-import {
-    PlaylistsContextConsumer,
-    PlaylistsContextProvider,
-} from '../components/playlistsContext'
-import { getAllData } from '../components/playlists/CRUD'
+import { PlaylistsContextProvider } from '../components/playlistsContext'
 
 function MyApp({ Component, pageProps }) {
     return (

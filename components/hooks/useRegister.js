@@ -157,14 +157,12 @@ export default function useRegister() {
                     }
 
                     if (res.status === 500) {
-                        console.log(data.message)
                         regDispatcher({
                             type: REG_ACTIONS.SERVER_ERROR,
                         })
                         return
                     }
                 } catch (err) {
-                    console.log(err)
                     regDispatcher({
                         type: REG_ACTIONS.SERVER_ERROR,
                     })

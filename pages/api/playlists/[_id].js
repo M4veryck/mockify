@@ -37,7 +37,6 @@ export default async function playlists(req, res) {
 
         return res.status(400).json({ error: 'Invalid method' })
     } catch (err) {
-        console.log(err.message)
         if (err.code === 11000) {
             return res
                 .status(400)

@@ -46,10 +46,6 @@ function PlaylistsContextProvider({ children }) {
 function PlaylistsContextConsumer() {
     const context = useContext(PlaylistsContext)
 
-    if (!context) {
-        console.error('Context Error')
-    }
-
     return context
 }
 

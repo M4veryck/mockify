@@ -38,10 +38,7 @@ export default function Navbar({ navOn, toggleNav }) {
                         <li>
                             <Link href="/register">
                                 <a
-                                    className={`${styles['nav-link']} ${
-                                        false === '/#projects' &&
-                                        styles['current']
-                                    }`}
+                                    className={styles['nav-link']}
                                     onClick={toggleNav}
                                 >
                                     Register
@@ -51,10 +48,7 @@ export default function Navbar({ navOn, toggleNav }) {
                         <li>
                             <Link href="/login">
                                 <a
-                                    className={`${styles['nav-link']} ${
-                                        false === '/contact' &&
-                                        styles['current']
-                                    }`}
+                                    className={styles['nav-link']}
                                     onClick={toggleNav}
                                 >
                                     Log in

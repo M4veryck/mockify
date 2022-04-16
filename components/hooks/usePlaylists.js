@@ -148,6 +148,14 @@ export default function usePlaylists() {
                     redirectToPlaylists: true,
                 }
 
+            case PLAYLISTS_ACTIONS.UPDATE_ERROR:
+                return {
+                    ...playlistsState,
+                    refreshData: true,
+                    redirectToPlaylists: true,
+                    operationServerError: true,
+                }
+
             case PLAYLISTS_ACTIONS.STOP_REDIRECT:
                 return {
                     ...playlistsState,

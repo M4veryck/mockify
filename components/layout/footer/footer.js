@@ -50,12 +50,15 @@ export default function Footer() {
         <footer className={styles.footer}>
             <div className={styles.footerContainer}>
                 <div className={styles.col1} id="iJustWantToFormatThis">
+                    <h3 className={styles['contact-info--title']}>
+                        Contact Info
+                    </h3>
                     {PersonalLinks}
                 </div>
                 <div className={styles.col2}>
-                    <h4 className={styles.pageInfoIntro}>
+                    <h3 className={styles.pageInfoIntro}>
                         Webpage developed with the technologies:
-                    </h4>
+                    </h3>
                     <div className={styles.techsContainerOne}>
                         {IconsContainerOne}
                     </div>
@@ -64,15 +67,7 @@ export default function Footer() {
                     </div>
                 </div>
                 <div className={styles.col3}>
-                    <h4 className={styles.attributionsTitle}>
-                        Backgrounds from:
-                    </h4>
-                    <Link href="https://www.freepik.com/vectors/background">
-                        <a className={styles.attributionsLink} target="_blank">
-                            Freepik
-                        </a>
-                    </Link>
-                    <h4 className={styles.attributionsTitle}>Icons from:</h4>
+                    <h3 className={styles.attributionsTitle}>Icons from:</h3>
                     <Link href="https://icons8.com">
                         <a className={styles.attributionsLink} target="_blank">
                             Icons8
