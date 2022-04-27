@@ -50,16 +50,18 @@ export default async function playlists(req, res) {
 }
 
 function authMiddleware(req) {
-    const authHeader = req.headers.authorization
+    const cookiesJSON = JSON.parse(req.headers.cookies)
 
-    if (!authHeader || !authHeader.startsWith('Bearer')) {
+    const authCookie = cookiesJSON.presence
+
+    // console.log(authCookie)
+
+    if (!authCookie) {
         return false
     }
 
-    const token = authHeader.split(' ')[1]
-
     try {
-        const userInfo = jwt.verify(token, process.env.JWT_SECRET)
+        const userInfo = jwt.verify(authCookie, process.env.JWT_SECRET)
         return { userInfo }
     } catch {
         return false

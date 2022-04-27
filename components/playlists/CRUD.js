@@ -1,3 +1,4 @@
+import { server } from '../../config'
 import { ONE_PLAYLIST_ACTIONS } from '../../pages/playlists/[_id]'
 import { PLAYLISTS_ACTIONS } from '../hooks/usePlaylists'
 
@@ -74,11 +75,10 @@ export async function getPlaylist(_id, onePlaylistDispatcher) {
 
 export async function addPlaylist(playlistsState, playlistsDispatcher) {
     try {
-        const userToken = localStorage.getItem('userToken')
-        const res = await fetch('/api/playlists', {
+        const res = await fetch(`${server}/api/playlists`, {
             method: 'POST',
             headers: {
-                Authorization: `Bearer ${userToken}`,
+                cookies: JSON.stringify({ presence: playlistsState.presence }),
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -116,26 +116,37 @@ export async function addPlaylist(playlistsState, playlistsDispatcher) {
 }
 
 export async function updatePlaylist(
-    _id,
+    playlistId,
     newName,
     onePlaylistDispatcher,
-    playlistsDispatcher
+    presence
+    // playlistsDispatcher
 ) {
     try {
-        const userToken = localStorage.getItem('userToken')
-        const res = await fetch(`/api/playlists/${_id}`, {
+        // const userToken = localStorage.getItem('userToken')
+        const res = await fetch(`${server}/api/playlists/${playlistId}`, {
             method: 'PATCH',
             headers: {
-                Authorization: `Bearer ${userToken}`,
+                cookies: JSON.stringify({
+                    presence,
+                }),
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ newName }),
         })
+        // const res = await fetch(`/api/playlists/${_id}`, {
+        //     method: 'PATCH',
+        //     headers: {
+        //         Authorization: `Bearer ${userToken}`,
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({ newName }),
+        // })
 
         const data = await res.json()
 
         if (res.ok) {
-            playlistsDispatcher({ type: PLAYLISTS_ACTIONS.UPDATE_SUCCESS })
+            onePlaylistDispatcher({ type: ONE_PLAYLIST_ACTIONS.UPDATE_SUCCESS })
             return
         }
 
@@ -146,9 +157,10 @@ export async function updatePlaylist(
             return
         }
 
-        playlistsDispatcher({ type: PLAYLISTS_ACTIONS.UPDATE_ERROR })
+        // playlistsDispatcher({ type: PLAYLISTS_ACTIONS.UPDATE_ERROR })
     } catch (err) {
-        playlistsDispatcher({ type: PLAYLISTS_ACTIONS.UPDATE_ERROR })
+        console.log(err)
+        // playlistsDispatcher({ type: PLAYLISTS_ACTIONS.UPDATE_ERROR })
     } finally {
         return null
     }
@@ -156,16 +168,19 @@ export async function updatePlaylist(
 
 export async function deletePlaylist(playlistsState, playlistsDispatcher) {
     try {
-        const userToken = localStorage.getItem('userToken')
-        const res = await fetch(`/api/playlists/${playlistsState.idToDelete}`, {
-            method: 'DELETE',
-            headers: {
-                Authorization: `Bearer ${userToken}`,
-                'Content-Type': 'application/json',
-            },
-        })
-
-        const data = await res.json()
+        // console.log(playlistsState.presence)
+        const res = await fetch(
+            `${server}/api/playlists/${playlistsState.idToDelete}`,
+            {
+                method: 'DELETE',
+                headers: {
+                    cookies: JSON.stringify({
+                        presence: playlistsState.presence,
+                    }),
+                    'Content-Type': 'application/json',
+                },
+            }
+        )
 
         if (res.ok) {
             playlistsDispatcher({

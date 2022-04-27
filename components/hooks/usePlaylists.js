@@ -4,22 +4,6 @@ import { useState, useEffect, useReducer } from 'react'
 import { addPlaylist, deletePlaylist, getAllData } from '../playlists/CRUD'
 import Playlist from '../playlists/playlist'
 
-const initialState = {
-    allData: null,
-    firstPlaylistsRender: true,
-    redirectToLogin: false,
-    playlistsComponents: null,
-    newName: '',
-    displayForm: false,
-    highlightName: false,
-    duplicated: false,
-    refreshData: false,
-    idToDelete: '',
-    redirectToPlaylists: false,
-    serverError: false,
-    operationServerError: false,
-}
-
 export const PLAYLISTS_ACTIONS = {
     TOGGLE_FORM: 'toggle-form',
     HANDLE_FORM: 'handle-form',
@@ -36,7 +20,7 @@ export const PLAYLISTS_ACTIONS = {
     SERVER_ERROR: 'server-error',
 }
 
-export default function usePlaylists() {
+export default function usePlaylists(initialState) {
     const router = useRouter()
     const [fetchAdd, setFetchAdd] = useState(false)
     const [fetchDelete, setFetchDelete] = useState(false)
@@ -77,11 +61,11 @@ export default function usePlaylists() {
                 return playlistsState
 
             case PLAYLISTS_ACTIONS.ADD_SUCCESS:
+                router.push('/playlists', '/playlists', { shallow: false })
                 return {
                     ...playlistsState,
                     newName: '',
                     displayForm: false,
-                    refreshData: true,
                 }
 
             case PLAYLISTS_ACTIONS.OP_SERVER_ERROR:
@@ -94,7 +78,7 @@ export default function usePlaylists() {
                 return {
                     ...playlistsState,
                     duplicated: true,
-                    refreshData: true,
+                    // refreshData: true,
                 }
 
             case PLAYLISTS_ACTIONS.SEND_DELETE:
@@ -105,41 +89,39 @@ export default function usePlaylists() {
                 }
 
             case PLAYLISTS_ACTIONS.DELETE_SUCCESS:
-                return {
-                    ...playlistsState,
-                    refreshData: true,
-                }
+                router.push('/playlists', '/playlists', { shallow: false })
+                return playlistsState
 
-            case PLAYLISTS_ACTIONS.REFRESH_ALL_DATA:
-                const newData = action.payload
-                const newPlaylistsComponents = newData.allPlaylists.map(
-                    (item, idx) => {
-                        const { name, createdAt, _id } = item
-                        return (
-                            <Playlist
-                                key={_id}
-                                _id={_id}
-                                name={name}
-                                createdAt={createdAt}
-                            />
-                        )
-                    }
-                )
+            // case PLAYLISTS_ACTIONS.REFRESH_ALL_DATA:
+            //     const newData = playlistsState.allData
+            //     const newPlaylistsComponents = newData.allPlaylists.map(
+            //         (item, idx) => {
+            //             const { name, createdAt, _id } = item
+            //             return (
+            //                 <Playlist
+            //                     key={_id}
+            //                     _id={_id}
+            //                     name={name}
+            //                     createdAt={createdAt}
+            //                 />
+            //             )
+            //         }
+            //     )
 
-                return {
-                    ...playlistsState,
-                    firstPlaylistsRender: false,
-                    allData: newData,
-                    refreshData: false,
-                    redirectToLogin: false,
-                    playlistsComponents: newPlaylistsComponents,
-                }
+            //     return {
+            //         ...playlistsState,
+            //         firstPlaylistsRender: false,
+            //         // allData: newData,
+            //         // refreshData: false,
+            //         // redirectToLogin: false,
+            //         playlistsComponents: newPlaylistsComponents,
+            //     }
 
-            case PLAYLISTS_ACTIONS.REDIRECT_TO_LOGIN:
-                return {
-                    ...playlistsState,
-                    redirectToLogin: true,
-                }
+            // case PLAYLISTS_ACTIONS.REDIRECT_TO_LOGIN:
+            //     return {
+            //         ...playlistsState,
+            //         redirectToLogin: true,
+            //     }
 
             case PLAYLISTS_ACTIONS.UPDATE_SUCCESS:
                 return {
@@ -187,20 +169,20 @@ export default function usePlaylists() {
         }
     }, [fetchDelete])
 
-    useEffect(() => {
-        if (playlistsState.refreshData || playlistsState.firstPlaylistsRender) {
-            getAllData(playlistsDispatcher)
-        }
-    }, [playlistsState.refreshData])
+    // useEffect(() => {
+    //     if (playlistsState.refreshData || playlistsState.firstPlaylistsRender) {
+    //         getAllData(playlistsDispatcher)
+    //     }
+    // }, [playlistsState.refreshData])
 
-    useEffect(() => {
-        if (playlistsState.redirectToPlaylists) {
-            router.push('/playlists')
-            playlistsDispatcher({
-                type: PLAYLISTS_ACTIONS.STOP_REDIRECT,
-            })
-        }
-    }, [playlistsState.redirectToPlaylists])
+    // useEffect(() => {
+    //     if (playlistsState.redirectToPlaylists) {
+    //         router.push('/playlists')
+    //         playlistsDispatcher({
+    //             type: PLAYLISTS_ACTIONS.STOP_REDIRECT,
+    //         })
+    //     }
+    // }, [playlistsState.redirectToPlaylists])
 
     return {
         playlistsState,

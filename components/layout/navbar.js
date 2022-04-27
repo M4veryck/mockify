@@ -3,10 +3,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import styles from '../../styles/Layout/Navbar.module.scss'
-import { PlaylistsContextConsumer } from '../playlistsContext'
+// import { PlaylistsContextConsumer } from '../playlistsContext'
 
 export default function Navbar({ navOn, toggleNav }) {
-    const { logOff } = PlaylistsContextConsumer()
+    // const { logOff } = PlaylistsContextConsumer()
     const router = useRouter()
     const [inPlaylists, setInPlaylists] = useState(false)
 
@@ -27,7 +27,9 @@ export default function Navbar({ navOn, toggleNav }) {
                         <button
                             className={`${styles['nav-link']} ${styles['log-out']}`}
                             onClick={e => {
-                                logOff()
+                                document.cookie = `presence=; path='/'; expires=Thu Jan 01 1970 00:00:01 GMT+0000`
+                                router.push('/')
+                                // logOff()
                             }}
                         >
                             Log out

@@ -1,34 +1,73 @@
 import { useState, useEffect, useReducer, useRef } from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 
 import styles from '../../styles/Playlists/Playlists.module.scss'
 import { PlaylistsContextConsumer } from '../../components/playlistsContext'
 import { getInputData } from '../../components/utils/utils'
 import { getPlaylist, updatePlaylist } from '../../components/playlists/CRUD'
+import { server } from '../../config'
 
 export const ONE_PLAYLIST_ACTIONS = {
     GET_ONE_PLAYLIST_DATA: 'get-one-playlist-data',
     HANDLE_UPDATE_FORM: 'handle-update-form',
     SEND_UPDATE: 'send-update',
+    UPDATE_SUCCESS: 'update-success',
     UPDATE_DUPLICATED: 'update-duplicated',
     SERVER_ERROR: 'server-error',
 }
 
-export default function PlaylistToEdit() {
+export async function getServerSideProps(context) {
+    const res = await fetch(`${server}/api/playlists/${context.query._id}`, {
+        method: 'GET',
+        headers: {
+            cookies: JSON.stringify({ presence: context.req.cookies.presence }),
+            'Content-Type': 'application/json',
+        },
+    })
+
+    if (res.status === 403) {
+        return {
+            redirect: {
+                destination: '/login',
+                permanent: false,
+            },
+        }
+    }
+
+    const data = await res.json()
+
+    if (res.ok) {
+        return {
+            props: {
+                data,
+                presence: context.req.cookies.presence,
+            },
+        }
+    }
+
+    return {
+        redirect: {
+            destination: '/',
+            permanent: false,
+        },
+    }
+}
+
+export default function PlaylistToEdit({ data, presence }) {
     const newNameRef = useRef()
-    const { playlistsDispatcher } = PlaylistsContextConsumer()
-    const [queryId, setQueryId] = useState('')
+    const router = useRouter()
     const [fetchUpdate, setFetchUpdate] = useState(false)
+    const initialState = {
+        newName: '',
+        highlightNewName: false,
+        nameDuplicated: false,
+        serverError: false,
+    }
     const [onePlaylistState, onePlaylistDispatcher] = useReducer(
         onePlaylistReducer,
-        {
-            onePlaylistData: null,
-            newName: '',
-            highlightNewName: false,
-            nameDuplicated: false,
-            serverError: false,
-        }
+        initialState
     )
 
     function onePlaylistReducer(onePlaylistState, action) {
@@ -59,6 +98,10 @@ export default function PlaylistToEdit() {
 
                 return onePlaylistState
 
+            case ONE_PLAYLIST_ACTIONS.UPDATE_SUCCESS:
+                router.push('/playlists')
+                return initialState
+
             case ONE_PLAYLIST_ACTIONS.UPDATE_DUPLICATED:
                 return {
                     ...onePlaylistState,
@@ -77,21 +120,12 @@ export default function PlaylistToEdit() {
     }
 
     useEffect(() => {
-        const pathnameArr = window.location.pathname.split('/')
-        const indexOfPlaylists = pathnameArr.indexOf('playlists')
-        const _id = pathnameArr[indexOfPlaylists + 1]
-
-        getPlaylist(_id, onePlaylistDispatcher)
-        setQueryId(_id)
-    }, [])
-
-    useEffect(() => {
         if (fetchUpdate) {
             updatePlaylist(
-                queryId,
+                data.singlePlaylist._id,
                 onePlaylistState.newName,
                 onePlaylistDispatcher,
-                playlistsDispatcher
+                presence
             )
         }
     }, [fetchUpdate])
@@ -125,25 +159,7 @@ export default function PlaylistToEdit() {
         )
     }
 
-    if (!onePlaylistState.onePlaylistData) {
-        return (
-            <>
-                <Head>
-                    <title>Playlists - Mockify</title>
-                    <meta
-                        name="description"
-                        content="Add, edit and delete custom playlists"
-                    />
-                    <link rel="icon" href="/favicon.ico" />
-                </Head>
-                <div className={styles['playlists--processing']}>
-                    <h1 className={styles['processing']}>Processing...</h1>
-                </div>
-            </>
-        )
-    }
-
-    const prevName = onePlaylistState.onePlaylistData.singlePlaylist.name
+    const prevName = data.singlePlaylist.name
 
     return (
         <>

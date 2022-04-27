@@ -1,4 +1,6 @@
 import { useReducer } from 'react'
+import { useRouter } from 'next/router'
+
 import { getAllData } from '../playlists/CRUD'
 import { filterEmptyFields, isValidEmail } from '../utils/utils'
 
@@ -10,6 +12,7 @@ export const LOGIN_ACTIONS = {
 
 export default function useLogin(initialState) {
     const [logState, logDispatcher] = useReducer(logReducer, initialState)
+    const router = useRouter()
 
     function logReducer(logState, action) {
         switch (action.type) {
@@ -56,9 +59,7 @@ export default function useLogin(initialState) {
                     }
                 }
 
-                const fetchLoginApi = action.payload
-
-                fetchLoginApi(logState, getAllData)
+                fetchLoginApi(logState)
 
                 return {
                     ...logState,
@@ -76,6 +77,52 @@ export default function useLogin(initialState) {
 
             default:
                 return logState
+        }
+    }
+
+    async function fetchLoginApi(logState) {
+        if (!logState.fetchInProgress) {
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(logState.form),
+                })
+
+                const data = await res.json()
+
+                if (res.ok) {
+                    const dateAfter1Day = new Date(
+                        new Date().getTime() + 60 * 60 * 24 * 1000
+                    )
+                    document.cookie = `presence=${
+                        data.token
+                    }; path='/'; expires=${dateAfter1Day.toUTCString()}`
+                    router.push('/playlists')
+                    return
+                }
+
+                // const errorCode = data.error_code || null
+
+                // if (
+                //     errorCode === 'wrongPassword' ||
+                //     errorCode === 'emailNotFound'
+                // ) {
+                //     logDispatcher({ type: LOGIN_ACTIONS.BAD_LOGIN })
+                //     return
+                // }
+
+                // if (res.status === 500) {
+                //     setServerError(true)
+                //     return
+                // }
+            } catch (err) {
+                // setServerError(true)
+                console.log(err)
+            }
         }
     }
 

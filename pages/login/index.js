@@ -6,7 +6,7 @@ import Link from 'next/link'
 import styles from '../../styles/Login/Login.module.scss'
 import useLogin, { LOGIN_ACTIONS } from '../../components/hooks/useLogin'
 import { getInputData } from '../../components/utils/utils'
-import { PlaylistsContextConsumer } from '../../components/playlistsContext'
+// import { PlaylistsContextConsumer } from '../../components/playlistsContext'
 
 const initialState = {
     form: {
@@ -23,15 +23,15 @@ const initialState = {
 }
 
 export default function Login() {
-    const { toPlaylists } = PlaylistsContextConsumer()
+    // const { toPlaylists } = PlaylistsContextConsumer()
     const { logState, logDispatcher } = useLogin(initialState)
-    const { playlistsDispatcher } = PlaylistsContextConsumer()
+    // const { playlistsDispatcher } = PlaylistsContextConsumer()
     const [serverError, setServerError] = useState(false)
     const router = useRouter()
 
-    if (toPlaylists) {
-        router.push('/playlists')
-    }
+    // if (toPlaylists) {
+    //     router.push('/playlists')
+    // }
 
     const isBadFieldClass = id => {
         if (
@@ -42,47 +42,6 @@ export default function Login() {
         }
 
         return ''
-    }
-
-    const fetchLoginApi = async (logState, getAllData) => {
-        if (!logState.fetchInProgress) {
-            try {
-                const res = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(logState.form),
-                })
-
-                const data = await res.json()
-
-                if (res.ok) {
-                    localStorage.setItem('userToken', data.token)
-                    await getAllData(playlistsDispatcher)
-                    router.push('/playlists')
-                    return
-                }
-
-                const errorCode = data.error_code || null
-
-                if (
-                    errorCode === 'wrongPassword' ||
-                    errorCode === 'emailNotFound'
-                ) {
-                    logDispatcher({ type: LOGIN_ACTIONS.BAD_LOGIN })
-                    return
-                }
-
-                if (res.status === 500) {
-                    setServerError(true)
-                    return
-                }
-            } catch (err) {
-                setServerError(true)
-            }
-        }
     }
 
     return (
@@ -166,7 +125,7 @@ export default function Login() {
 
                                         logDispatcher({
                                             type: LOGIN_ACTIONS.SEND_LOGIN,
-                                            payload: fetchLoginApi,
+                                            // payload: fetchLoginApi,
                                         })
                                     }}
                                 >

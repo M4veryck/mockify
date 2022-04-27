@@ -8,14 +8,15 @@ import { useEffect } from 'react'
 import { PlaylistsContextConsumer } from '../components/playlistsContext'
 
 export default function Home() {
-    const { toPlaylists } = PlaylistsContextConsumer()
+    // const { toPlaylists } = PlaylistsContextConsumer()
     const router = useRouter()
 
-    useEffect(() => {
-        if (toPlaylists) {
-            router.push('/playlists')
-        }
-    }, [toPlaylists])
+    // useEffect(() => {
+    //     document.cookie = 'hello=world'
+    //     if (toPlaylists) {
+    //         router.push('/playlists')
+    //     }
+    // }, [toPlaylists])
 
     return (
         <>
