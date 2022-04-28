@@ -52,9 +52,7 @@ export default async function playlists(req, res) {
 function authMiddleware(req) {
     const cookiesJSON = JSON.parse(req.headers.cookies)
 
-    const authCookie = cookiesJSON.presence
-
-    // console.log(authCookie)
+    const authCookie = cookiesJSON?.presence
 
     if (!authCookie) {
         return false

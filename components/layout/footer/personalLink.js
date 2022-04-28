@@ -6,7 +6,11 @@ export default function PersonalLink({ url, imageSrc, imageAlt, text }) {
     return (
         <div className={styles.linkContainer}>
             <Link href={url}>
-                <a className={styles.footerLink} target="_blank">
+                <a
+                    className={styles.footerLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
                     <Image
                         src={imageSrc}
                         alt={imageAlt}

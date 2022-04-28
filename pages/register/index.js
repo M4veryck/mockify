@@ -1,18 +1,12 @@
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 import styles from '../../styles/Register/Register.module.scss'
 import { getInputData } from '../../components/utils/utils'
 import useRegister, { REG_ACTIONS } from '../../components/hooks/useRegister'
-import { PlaylistsContextConsumer } from '../../components/playlistsContext'
 
 export default function Register() {
-    const { toPlaylists } = PlaylistsContextConsumer()
-    const { regState, regDispatcher, setSendFetch } = useRegister()
-    const router = useRouter()
-
-    if (regState.redirect || toPlaylists) router.push('/playlists')
+    const { regState, regDispatcher } = useRegister()
 
     const isBadFieldClass = id => {
         if (
@@ -23,27 +17,6 @@ export default function Register() {
         }
 
         return ''
-    }
-
-    if (regState.serverError) {
-        return (
-            <>
-                <Head>
-                    <title>Register</title>
-                    <meta name="description" content="Register" />
-                    <link rel="icon" href="/favicon.ico" />
-                </Head>
-                <section className={styles['login--section']}>
-                    <main className={styles['login--container']}>
-                        <p className={styles['server-error']}>
-                            Oops! <br />
-                            Error 500: Server Error. <br />
-                            Please refresh and try again.
-                        </p>
-                    </main>
-                </section>
-            </>
-        )
     }
 
     return (
@@ -147,7 +120,6 @@ export default function Register() {
 
                                 regDispatcher({
                                     type: REG_ACTIONS.SEND_REGISTER,
-                                    setSendFetch,
                                 })
                             }}
                         >

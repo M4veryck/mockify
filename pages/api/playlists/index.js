@@ -22,10 +22,13 @@ export default async function playlists(req, res) {
         }
 
         if (req.method === 'POST') {
-            const newPlaylist = await Playlist.create({
-                name: req.body.name,
-                createdBy: req.body.userId,
-            })
+            const newPlaylist = await Playlist.create(
+                {
+                    name: req.body.name,
+                    createdBy: req.body.userId,
+                }
+                // { unique: true }
+            )
             return res.status(200).json({ newPlaylist })
         }
 
@@ -38,6 +41,7 @@ export default async function playlists(req, res) {
 
         return res.status(400).json({ error: 'Invalid method' })
     } catch (err) {
+        console.log(err.message)
         if (err.code === 11000) {
             return res
                 .status(400)
@@ -53,7 +57,7 @@ export default async function playlists(req, res) {
 function authMiddleware(req) {
     const cookiesJSON = JSON.parse(req.headers.cookies)
 
-    const authCookie = cookiesJSON.presence
+    const authCookie = cookiesJSON?.presence
 
     if (!authCookie) {
         return false

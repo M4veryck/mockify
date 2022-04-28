@@ -1,27 +1,31 @@
+import { useRouter } from 'next/router'
+
 import '../styles/globals.scss'
 import Layout from '../components/layout/layout'
-// import { PlaylistsContextProvider } from '../components/playlistsContext'
+function MyApp({ Component, pageProps, redirect }) {
+    // console.log(redirect)
+    // const router = useRouter()
+    // if (redirect?.destination === '/playlists') router.push('/playlists')
 
-function MyApp({ Component, pageProps }) {
     return (
-        // <PlaylistsContextProvider>
         <div className={'page--container'}>
             <Layout>
                 <Component {...pageProps} />
             </Layout>
         </div>
-        // </PlaylistsContextProvider>
     )
 }
 
 MyApp.getInitialProps = async context => {
-    // console.log(context)
     if (typeof context !== 'undefined') {
         if (
             context.ctx?.req?.cookies.presence &&
-            context.router?.route !== '/playlists'
+            !context.router?.route.startsWith('/playlists')
         ) {
-            // console.log('return from app ran')
+            context.ctx.res.writeHead(301, {
+                Location: '/playlists',
+            })
+            context.ctx.res.end()
             return {
                 redirect: {
                     destination: '/playlists',

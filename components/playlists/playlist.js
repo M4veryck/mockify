@@ -2,10 +2,9 @@ import Link from 'next/link'
 
 import styles from '../../styles/Playlists/Playlists.module.scss'
 import usePlaylists, { PLAYLISTS_ACTIONS } from '../hooks/usePlaylists'
-// import { PlaylistsContextConsumer } from '../playlistsContext'
 
-export default function Playlist({ _id, name, createdAt, initialState }) {
-    const { playlistsDispatcher } = usePlaylists(initialState)
+export default function Playlist({ _id, name, createdAt, userId, presence }) {
+    const { playlistsDispatcher } = usePlaylists(userId, presence)
 
     let formatedDate = ''
     const dateArr = createdAt.split('-')

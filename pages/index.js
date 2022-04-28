@@ -1,23 +1,9 @@
-import { useRouter } from 'next/router'
-
 import Head from 'next/head'
 import Hero from '../components/hero'
 
 import styles from '../styles/Home.module.scss'
-import { useEffect } from 'react'
-import { PlaylistsContextConsumer } from '../components/playlistsContext'
 
 export default function Home() {
-    // const { toPlaylists } = PlaylistsContextConsumer()
-    const router = useRouter()
-
-    // useEffect(() => {
-    //     document.cookie = 'hello=world'
-    //     if (toPlaylists) {
-    //         router.push('/playlists')
-    //     }
-    // }, [toPlaylists])
-
     return (
         <>
             <Head>

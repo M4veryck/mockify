@@ -1,11 +1,15 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
+
 import styles from '../../styles/Layout/Header.module.scss'
 import { useState, useEffect } from 'react'
 import Navbar from './navbar'
 
 export default function Header() {
+    const router = useRouter()
     const [navOn, setNavOn] = useState(false)
+    const [inPlaylists, setInPlaylists] = useState(false)
 
     const toggleNav = () => {
         if (window.innerWidth < 900) {
@@ -14,6 +18,15 @@ export default function Header() {
         }
         setNavOn(false)
     }
+
+    useEffect(() => {
+        const pathnameArr = window.location.pathname.split('/')
+        if (pathnameArr.some(path => path === 'playlists')) {
+            setInPlaylists(true)
+            return
+        }
+        setInPlaylists(false)
+    }, [router])
 
     useEffect(() => {
         if (navOn) {
@@ -25,7 +38,7 @@ export default function Header() {
 
     return (
         <header className={styles['header']} id="header">
-            <Link href="/">
+            <Link href={inPlaylists ? '/playlists' : '/'}>
                 <a className={styles['logo--link']}>
                     <Image
                         src="/logos/mockify-logo.svg"

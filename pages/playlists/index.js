@@ -1,13 +1,11 @@
 import Head from 'next/head'
 import { useRef, useEffect } from 'react'
-import { useRouter } from 'next/router'
 
 import styles from '../../styles/Playlists/Playlists.module.scss'
 import { getInputData } from '../../components/utils/utils'
 import usePlaylists, {
     PLAYLISTS_ACTIONS,
 } from '../../components/hooks/usePlaylists'
-import { PlaylistsContextConsumer } from '../../components/playlistsContext'
 import { server } from '../../config'
 import Playlist from '../../components/playlists/playlist'
 
@@ -42,29 +40,15 @@ export async function getServerSideProps(context) {
 
     return {
         redirect: {
-            destination: '/',
+            destination: '/500',
             permanent: false,
         },
     }
 }
 
 export default function Playlists({ data, presence }) {
-    const initialState = {
-        allData: data,
-        presence,
-        // firstPlaylistsRender: true,
-        redirectToLogin: false,
-        playlistsComponents: null,
-        newName: '',
-        displayForm: false,
-        highlightName: false,
-        duplicated: false,
-        // refreshData: false,
-        idToDelete: '',
-        // redirectToPlaylists: false,
-        serverError: false,
-        operationServerError: false,
-    }
+    const newNameRef = useRef()
+    const userId = data.userInfo.userId
 
     const newPlaylistsComponents = data.allPlaylists.map((item, idx) => {
         const { name, createdAt, _id } = item
@@ -74,63 +58,15 @@ export default function Playlists({ data, presence }) {
                 _id={_id}
                 name={name}
                 createdAt={createdAt}
-                initialState={initialState}
+                userId={userId}
+                presence={presence}
             />
         )
     })
-    // console.log(data)
-    const { playlistsState, playlistsDispatcher } = usePlaylists(initialState)
-    const router = useRouter()
-    const newNameRef = useRef()
-
-    // if (playlistsState.redirectToLogin) {
-    //     router.push('/login')
-    // }
-
-    // if (playlistsState.redirectToPlaylist) {
-    //     router.push(`/playlists/${playlistsState.nameToGet}`)
-    // }
-
-    // if (playlistsState.serverError) {
-    //     return (
-    //         <>
-    //             <Head>
-    //                 <title>Server Error - Mockify</title>
-    //                 <meta
-    //                     name="description"
-    //                     content="Add, edit and delete custom playlists"
-    //                 />
-    //                 <link rel="icon" href="/favicon.ico" />
-    //             </Head>
-    //             <div className={styles['server-error']}>
-    //                 <h1 className={styles['sad-face']}>:(</h1>
-    //                 <p className={styles['server-error--message']}>
-    //                     500 Error <br /> <br />
-    //                     My server ran into a problem (sorry for the
-    //                     inconviniences), please try again later.
-    //                 </p>
-    //             </div>
-    //         </>
-    //     )
-    // }
-
-    // if (!playlistsState.allData) {
-    //     return (
-    //         <>
-    //             <Head>
-    //                 <title>Playlists - Mockify</title>
-    //                 <meta
-    //                     name="description"
-    //                     content="Add, edit and delete custom playlists"
-    //                 />
-    //                 <link rel="icon" href="/favicon.ico" />
-    //             </Head>
-    //             <div className={styles['playlists--processing']}>
-    //                 <h1 className={styles['processing']}>Processing...</h1>
-    //             </div>
-    //         </>
-    //     )
-    // }
+    const { playlistsState, playlistsDispatcher } = usePlaylists(
+        userId,
+        presence
+    )
 
     useEffect(() => {
         if (playlistsState.highlightName) {
@@ -153,10 +89,10 @@ export default function Playlists({ data, presence }) {
                     <h1 className={styles['title']}>
                         Hi{' '}
                         <span className={styles['user-name']}>
-                            {playlistsState.allData.userInfo.name}
+                            {data.userInfo.name}
                         </span>
                     </h1>
-                    {!playlistsState.allData.allPlaylists.length ? (
+                    {data.allPlaylists.length === 0 ? (
                         <p className={styles['no-playlists']}>
                             You currently have no playlists
                         </p>
@@ -182,7 +118,7 @@ export default function Playlists({ data, presence }) {
                         <form className={styles['add-form']}>
                             {playlistsState.duplicated && (
                                 <p className={styles['already-exists']}>
-                                    Playlist '{playlistsState.name}' already
+                                    Playlist '{playlistsState.newName}' already
                                     exists
                                 </p>
                             )}

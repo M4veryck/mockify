@@ -1,4 +1,6 @@
+import { useRouter } from 'next/router'
 import { useReducer, useEffect, useState } from 'react'
+
 import { isValidEmail } from '../utils/utils'
 
 export const REG_ACTIONS = {
@@ -30,8 +32,9 @@ const regInitialState = {
 }
 
 export default function useRegister() {
-    const [regState, regDispatcher] = useReducer(regReducer, regInitialState)
     const [sendFetch, setSendFetch] = useState(false)
+    const router = useRouter()
+    const [regState, regDispatcher] = useReducer(regReducer, regInitialState)
 
     function regReducer(regState, action) {
         if (action.payload) {
@@ -92,18 +95,11 @@ export default function useRegister() {
                     }
                 }
 
-                action.setSendFetch(true)
+                setSendFetch(true)
 
                 return {
                     ...regState,
                     disabledBtn: true,
-                    fetchInProgress: true,
-                }
-
-            case REG_ACTIONS.SUCCESS:
-                return {
-                    ...regState,
-                    redirect: true,
                 }
 
             case REG_ACTIONS.ALREADY_REGISTERED:
@@ -111,7 +107,6 @@ export default function useRegister() {
                     ...regState,
                     disabledBtn: false,
                     alreadyRegistered: true,
-                    fetchInProgress: false,
                 }
 
             case REG_ACTIONS.SERVER_ERROR:
@@ -121,54 +116,52 @@ export default function useRegister() {
                 }
 
             default:
-                return regState
+                throw new Error(`'${action.type}' is not a valid action`)
+        }
+    }
+
+    async function fetchRegisterApi(regState) {
+        try {
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(regState.form),
+            })
+
+            const data = await res.json()
+
+            if (res.ok) {
+                const dateAfter1Day = new Date(
+                    new Date().getTime() + 60 * 60 * 24 * 1000
+                )
+                document.cookie = `presence=${
+                    data.token
+                }; path='/'; expires=${dateAfter1Day.toUTCString()}`
+                router.push('/playlists')
+                return null
+            }
+
+            if (data.alreadyRegistered) {
+                regDispatcher({
+                    type: REG_ACTIONS.ALREADY_REGISTERED,
+                })
+                return null
+            }
+
+            throw new Error('Something went wrong')
+        } catch (err) {
+            router.push('/500')
+            return null
         }
     }
 
     useEffect(() => {
         if (sendFetch) {
             setSendFetch(false)
-            ;(async regState => {
-                try {
-                    const res = await fetch('/api/auth/register', {
-                        method: 'POST',
-                        mode: 'cors',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(regState.form),
-                    })
-
-                    const data = await res.json()
-
-                    if (res.ok) {
-                        localStorage.setItem('userToken', data.token)
-                        regDispatcher({
-                            type: REG_ACTIONS.SUCCESS,
-                        })
-                        return
-                    }
-
-                    if (data.alreadyRegistered) {
-                        regDispatcher({
-                            type: REG_ACTIONS.ALREADY_REGISTERED,
-                        })
-                        return
-                    }
-
-                    if (res.status === 500) {
-                        regDispatcher({
-                            type: REG_ACTIONS.SERVER_ERROR,
-                        })
-                        return
-                    }
-                } catch (err) {
-                    regDispatcher({
-                        type: REG_ACTIONS.SERVER_ERROR,
-                    })
-                    return
-                }
-            })(regState)
+            fetchRegisterApi(regState)
         }
     }, [sendFetch])
 

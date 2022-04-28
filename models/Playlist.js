@@ -5,6 +5,7 @@ const PlaylistSchema = new mongoose.Schema({
         type: String,
         required: [true, 'name missing'],
         unique: true,
+        // index: true,
         // dropDups: true,
     },
     createdBy: {
@@ -18,6 +19,8 @@ const PlaylistSchema = new mongoose.Schema({
         default: Date(),
     },
 })
+
+PlaylistSchema.index({ name: 1 })
 
 export default mongoose.models.Playlist ||
     mongoose.model('Playlist', PlaylistSchema)

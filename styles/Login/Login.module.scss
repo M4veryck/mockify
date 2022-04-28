@@ -19,16 +19,13 @@
     justify-self: center;
     justify-items: center;
 
-    // background-color: #ff7e4f;
-    // background-color: $clr-soft-dark;
     background: rgb(17, 16, 22);
     background: linear-gradient(
         0deg,
         rgba(17, 16, 22, 1) 33%,
         rgba(0, 0, 0, 0.8) 99%
     );
-    // background-color: rgb(32, 32, 32);
-    padding: 3em 2em;
+    padding: 3em 0.5em;
     border-radius: 5px;
     margin-block: 3em;
 }
@@ -56,13 +53,11 @@
 
 .description {
     width: 90%;
-    // max-width: 280px;
     justify-self: center;
 
     margin-bottom: 3em;
 
     font-size: 1.2rem;
-    // text-align: center;
 }
 
 .form {
@@ -85,27 +80,47 @@
     }
 }
 
-.email,
-.password {
+@mixin field() {
     @include font-stack($primary-font);
 
-    background-color: rgb(252, 252, 252);
-    padding: 0.25em 0.5em;
-    border: none;
-    border-radius: 5px;
-    outline-color: #693be7;
+    background: none;
+    padding: 0.25em;
     margin-bottom: 2em;
+    border: none;
+    border-bottom: 2px solid #693be7;
 
     font-size: $fs-p;
+    color: #fff;
+
+    &:hover,
+    &:focus,
+    &:-webkit-autofill {
+        caret-color: #fff;
+        -webkit-box-shadow: 0 0 0 30px #150e20 inset !important;
+        box-shadow: 0 0 0 30px #150e20 inset !important;
+        -webkit-text-fill-color: #fff !important;
+    }
+
+    &:focus {
+        outline: 2px solid #fff;
+        outline-offset: 3px;
+        border-radius: 1px;
+    }
+}
+
+.email,
+.password {
+    @include field();
 }
 
 .invalid-email {
-    width: fit-content;
+    width: 75%;
+    max-width: 280px;
 
-    border-bottom: 1px solid $clr-error;
     margin-top: -1em;
 
-    color: $clr-error;
+    color: #f02626;
+    font-size: 0.9rem;
 }
 
 .bad-field {
@@ -126,7 +141,6 @@
     margin-block: 1.5em;
 
     color: $clr-soft-light;
-    // text-transform: uppercase;
     font-weight: 700;
     letter-spacing: 1px;
 
