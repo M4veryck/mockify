@@ -1,12 +1,6 @@
-import { useRouter } from 'next/router'
-
 import '../styles/globals.scss'
 import Layout from '../components/layout/layout'
-function MyApp({ Component, pageProps, redirect }) {
-    // console.log(redirect)
-    // const router = useRouter()
-    // if (redirect?.destination === '/playlists') router.push('/playlists')
-
+function MyApp({ Component, pageProps }) {
     return (
         <div className={'page--container'}>
             <Layout>
@@ -18,14 +12,16 @@ function MyApp({ Component, pageProps, redirect }) {
 
 MyApp.getInitialProps = async context => {
     if (typeof context !== 'undefined') {
-        if (
-            context.ctx?.req?.cookies.presence &&
-            !context.router?.route.startsWith('/playlists')
-        ) {
-            context.ctx.res.writeHead(301, {
+        const presenceCookie = context.ctx?.req?.cookies.presence
+        const routeContainsPlaylists =
+            context.router?.route.startsWith('/playlists')
+        if (presenceCookie && !routeContainsPlaylists) {
+            const res = context.ctx.res
+
+            res.writeHead(301, {
                 Location: '/playlists',
             })
-            context.ctx.res.end()
+            res.end()
             return {
                 redirect: {
                     destination: '/playlists',

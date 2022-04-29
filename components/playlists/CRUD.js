@@ -13,6 +13,7 @@ export async function addPlaylist(name, userId, presence, playlistsDispatcher) {
             body: JSON.stringify({
                 name,
                 userId,
+                createdAt: new Date(),
             }),
         })
 

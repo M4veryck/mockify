@@ -4,15 +4,13 @@ import styles from '../../styles/Playlists/Playlists.module.scss'
 import usePlaylists, { PLAYLISTS_ACTIONS } from '../hooks/usePlaylists'
 
 export default function Playlist({ _id, name, createdAt, userId, presence }) {
+    const localDate = new Date(createdAt)
     const { playlistsDispatcher } = usePlaylists(userId, presence)
 
-    let formatedDate = ''
-    const dateArr = createdAt.split('-')
-    formatedDate += dateArr[1]
-    formatedDate += '/'
-    formatedDate += dateArr[2].slice(0, 2)
-    formatedDate += '/'
-    formatedDate += dateArr[0]
+    const year = localDate.getFullYear()
+    const month = localDate.getMonth() + 1
+    const day = localDate.getDate()
+    const formatedDate = month + '/' + day + '/' + year
 
     return (
         <div className={styles['playlist']}>

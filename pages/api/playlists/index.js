@@ -22,26 +22,16 @@ export default async function playlists(req, res) {
         }
 
         if (req.method === 'POST') {
-            const newPlaylist = await Playlist.create(
-                {
-                    name: req.body.name,
-                    createdBy: req.body.userId,
-                }
-                // { unique: true }
-            )
-            return res.status(200).json({ newPlaylist })
-        }
-
-        if (req.method === 'DELETE') {
-            await Playlist.findOneAndDelete({
-                name: req.query.name,
+            const newPlaylist = await Playlist.create({
+                name: req.body.name,
+                createdBy: req.body.userId,
+                createdAt: req.body.createdAt,
             })
-            return res.status(200).json({ success: true })
+            return res.status(200).json({ newPlaylist })
         }
 
         return res.status(400).json({ error: 'Invalid method' })
     } catch (err) {
-        console.log(err.message)
         if (err.code === 11000) {
             return res
                 .status(400)

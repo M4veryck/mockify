@@ -10,16 +10,14 @@
     width: 75%;
     max-width: 280px;
 
-    // border-bottom: 1px solid #f02626;
     margin-top: -1em;
 
-    // text-align: center;
     color: #f02626;
     font-size: 0.9rem;
 }
 
 .bad-field {
-    border: 2.5px solid #f02626;
+    border-bottom: 2px solid $clr-error;
 }
 
 .already-registered {
